@@ -1,20 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'src/app.dart';
+import 'core/di/injection_container.dart' as di;
+import 'features/products/presentation/cubit/products_cubit.dart';
+import 'features/products/presentation/pages/product_list_page.dart';
 import 'src/settings/settings_controller.dart';
 import 'src/settings/settings_service.dart';
 
 void main() async {
-  // Set up the SettingsController, which will glue user settings to multiple
-  // Flutter Widgets.
-  final settingsController = SettingsController(SettingsService());
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize dependency injection
+  await di.init();
 
-  // Load the user's preferred theme while the splash screen is displayed.
-  // This prevents a sudden theme change when the app is first displayed.
+  // Set up the SettingsController
+  final settingsController = SettingsController(SettingsService());
   await settingsController.loadSettings();
 
-  // Run the app and pass in the SettingsController. The app listens to the
-  // SettingsController for changes, then passes it further down to the
-  // SettingsView.
   runApp(MyApp(settingsController: settingsController));
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({
+    super.key,
+    required this.settingsController,
+  });
+
+  final SettingsController settingsController;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: settingsController,
+      builder: (BuildContext context, Widget? child) {
+        return MaterialApp(
+          restorationScopeId: 'app',
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en', ''),
+          ],
+          onGenerateTitle: (BuildContext context) => 'Holo Marketplace',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData.dark(),
+          themeMode: settingsController.themeMode,
+          home: BlocProvider(
+            create: (context) => di.sl<ProductsCubit>()..loadProducts(),
+            child: const ProductListPage(),
+          ),
+        );
+      },
+    );
+  }
 }
