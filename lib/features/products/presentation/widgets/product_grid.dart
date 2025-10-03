@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../domain/entities/product.dart';
+import '../pages/product_detail_page.dart';
 
 class ProductGrid extends StatelessWidget {
   final List<Product> products;
@@ -62,7 +63,12 @@ class _ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // TODO: Navigate to product details
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailPage(product: product),
+          ),
+        );
       },
       child: Container(
         decoration: BoxDecoration(
