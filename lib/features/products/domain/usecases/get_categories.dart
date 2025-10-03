@@ -27,6 +27,7 @@ class GetCategoriesUseCase {
   String _capitalize(String text) {
     if (text.isEmpty) return text;
     return text.split(' ')
+        .where((word) => word.isNotEmpty)
         .map((word) => word[0].toUpperCase() + word.substring(1))
         .join(' ');
   }

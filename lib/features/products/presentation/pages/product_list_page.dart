@@ -92,7 +92,7 @@ class ProductListPage extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Search clothes. . .',
+                      'Search clothes...',
                       style: TextStyle(
                         color: Colors.grey[400],
                         fontSize: 14,

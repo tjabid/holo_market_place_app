@@ -27,3 +27,10 @@ the `lib/src/localization` directory.
 
 To support additional languages, please visit the tutorial on
 [Internationalizing Flutter apps](https://flutter.dev/to/internationalization).
+
+## Unit tests
+- `mockito` - For creating mock objects
+- `build_runner` - For generating mock files
+
+### Generated Mock Files:
+Run `build_runner` to create *_test.mocks.dart
