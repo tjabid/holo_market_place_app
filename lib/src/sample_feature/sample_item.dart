@@ -6,8 +6,9 @@ class SampleItem {
     required this.price,
     required this.description,
     required this.category,
-    required this.rating,
     required this.imageUrl,
+    required this.rating,
+    required this.ratingCount,
   });
 
   final int id;
@@ -15,6 +16,7 @@ class SampleItem {
   final double price;
   final String description;
   final String category;
-  final double rating;
   final String imageUrl;
+  final double rating;
+  final int ratingCount;
 }
