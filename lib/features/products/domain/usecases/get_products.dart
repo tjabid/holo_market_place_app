@@ -14,29 +14,17 @@ class GetProductsUseCase {
   /// Returns Either<Failure, List<Product>>
   /// - Left: Failure if something went wrong
   /// - Right: List of products if successful
-  Future<Either<Failure, List<Product>>> call() async {
-    // business logic
-    // For example:
-    
-    // 1. Log analytics
-    // analyticsService.logEvent('products_fetched');
-    
-    // 2. Apply business rules
-    // if (userHasPremiumSubscription) {
-    //   return repository.getPremiumProducts();
-    // }
-    
-    // 3. For now, just delegate to repository
-    return await repository.getProducts();
-  }
-  
-  /// Alternative: Execute with parameters
-  /// You could also add parameters for more control
-  Future<Either<Failure, List<Product>>> execute({
+  Future<Either<Failure, List<Product>>> call({
     int? limit,
     String? sortBy,
   }) async {
+    // Fetch products from repository
     final result = await repository.getProducts();
+    
+    // If no parameters, return as is
+    if (limit == null && sortBy == null) {
+      return result;
+    }
     
     // Apply business rules based on parameters
     return result.fold(
@@ -44,22 +32,51 @@ class GetProductsUseCase {
       (products) {
         var filteredProducts = products;
         
-        // Apply limit
-        if (limit != null && limit > 0) {
-          filteredProducts = products.take(limit).toList();
+        // Apply sorting first
+        if (sortBy != null) {
+          filteredProducts = _applySorting(filteredProducts, sortBy);
         }
         
-        // Apply sorting
-        if (sortBy == 'price_asc') {
-          filteredProducts.sort((a, b) => a.price.compareTo(b.price));
-        } else if (sortBy == 'price_desc') {
-          filteredProducts.sort((a, b) => b.price.compareTo(a.price));
-        } else if (sortBy == 'rating') {
-          filteredProducts.sort((a, b) => b.rating.compareTo(a.rating));
+        // Apply limit after sorting
+        if (limit != null && limit > 0) {
+          filteredProducts = filteredProducts.take(limit).toList();
         }
         
         return Right(filteredProducts);
       },
     );
+  }
+  
+  /// Helper method to apply sorting logic
+  List<Product> _applySorting(List<Product> products, String sortBy) {
+    final sortedProducts = List<Product>.from(products);
+    
+    switch (sortBy.toLowerCase()) {
+      case 'price_asc':
+        sortedProducts.sort((a, b) => a.price.compareTo(b.price));
+        break;
+      case 'price_desc':
+        sortedProducts.sort((a, b) => b.price.compareTo(a.price));
+        break;
+      case 'rating':
+      case 'rating_desc':
+        sortedProducts.sort((a, b) => b.rating.compareTo(a.rating));
+        break;
+      case 'rating_asc':
+        sortedProducts.sort((a, b) => a.rating.compareTo(b.rating));
+        break;
+      case 'name':
+      case 'name_asc':
+        sortedProducts.sort((a, b) => a.title.compareTo(b.title));
+        break;
+      case 'name_desc':
+        sortedProducts.sort((a, b) => b.title.compareTo(a.title));
+        break;
+      default:
+        // No sorting or unknown sort type
+        break;
+    }
+    
+    return sortedProducts;
   }
 }

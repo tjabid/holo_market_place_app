@@ -15,6 +15,7 @@ class ProductsCubit extends Cubit<ProductsState> {
     required this.getCategoriesUseCase,
   }) : super(ProductsInitial());
 
+  /// Load all products with categories
   Future<void> loadProducts() async {
     emit(ProductsLoading());
 
@@ -36,6 +37,7 @@ class ProductsCubit extends Cubit<ProductsState> {
     );
   }
 
+  /// Filter products by category
   Future<void> filterByCategory(String category) async {
     final currentState = state;
     if (currentState is! ProductsLoaded) return;
@@ -63,18 +65,18 @@ class ProductsCubit extends Cubit<ProductsState> {
     }
   }
   
-  // Advanced filtering with business logic in use case
+  /// Advanced filtering with business logic in use case
   Future<void> loadProductsWithOptions({
     int? limit,
     String? sortBy,
   }) async {
     emit(ProductsLoading());
-    
-    final result = await getProductsUseCase.execute(
+
+    final result = await getProductsUseCase(
       limit: limit,
       sortBy: sortBy,
     );
-    
+
     result.fold(
       (failure) => emit(ProductsError(failure.message)),
       (products) async {
@@ -91,7 +93,26 @@ class ProductsCubit extends Cubit<ProductsState> {
     );
   }
 
+  /// Refresh products (reload from server)
   Future<void> refreshProducts() async {
     await loadProducts();
+  }
+
+  /// Sort current products without refetching
+  Future<void> sortProducts(String sortBy) async {
+    final currentState = state;
+    if (currentState is! ProductsLoaded) return;
+
+    emit(ProductsLoading());
+
+    // Refetch with sort parameter
+    final result = await getProductsUseCase(sortBy: sortBy);
+
+    result.fold(
+      (failure) => emit(ProductsError(failure.message)),
+      (products) => emit(currentState.copyWith(
+        products: products,
+      )),
+    );
   }
 }

@@ -46,7 +46,9 @@ class ProductListPage extends StatelessWidget {
               child: BlocBuilder<ProductsCubit, ProductsState>(
                 builder: (context, state) {
                   if (state is ProductsLoading) {
-
+                    return const Center(
+                      child: CircularProgressIndicator(color: Colors.black),
+                    );
                   } else if (state is ProductsLoaded) {
                     return RefreshIndicator(
                       onRefresh: () => context.read<ProductsCubit>().refreshProducts(),
