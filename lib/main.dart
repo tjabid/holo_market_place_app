@@ -5,8 +5,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/di/injection_container.dart' as di;
 import 'features/products/presentation/cubit/products_cubit.dart';
 import 'features/products/presentation/pages/product_list_page.dart';
-import 'src/settings/settings_controller.dart';
-import 'src/settings/settings_service.dart';
+import 'features/settings/settings_controller.dart';
+import 'features/settings/settings_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
