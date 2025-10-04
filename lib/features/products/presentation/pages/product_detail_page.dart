@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/product.dart';
 import '../cubit/cart_cubit.dart';
+import '../widgets/buttom_button.dart';
 import '../widgets/cart_icon_badge.dart';
 import '../widgets/floating_action_button.dart';
 
@@ -191,7 +192,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ),
 
           // Bottom Bar - Price and Add to Cart
-          _buildBottomBar(context),
+
+          BottomButton(
+            textButton: 'Add to Cart',
+            iconButton: Icons.shopping_bag_outlined,
+            onPressed: () {
+              context.read<CartCubit>().addToCart(
+                    widget.product,
+                    selectedSize: _shouldShowSizeSelector ? selectedSize : null,
+                  );
+              _showAddedToCartSnackBar(context);
+            },
+          )
         ],
       ),
     );
@@ -220,44 +232,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         CartIconBadge(),
         SizedBox(width: 24),
       ],
-    );
-  }
-
-  Widget _buildFloatingButtons() {
-    return Positioned.fill(
-      child: Stack(
-        children: [
-          // Favorite Button
-          Positioned(
-            top: 50,
-            right: 20,
-            child: CustomFloatingActionButton(
-              icon: isFavorite ? Icons.favorite : Icons.favorite_border,
-              onTap: () {
-                setState(() {
-                  isFavorite = !isFavorite;
-                });
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      isFavorite
-                          ? 'Added to favorites'
-                          : 'Removed from favorites',
-                    ),
-                    duration: const Duration(seconds: 1),
-                  ),
-                );
-              },
-              semanticLabel: isFavorite
-                  ? 'Remove ${widget.product.title} from favorites'
-                  : 'Add ${widget.product.title} to favorites',
-              semanticHint: 'Double tap to toggle favorite',
-              iconColor: isFavorite ? Colors.red : null,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -411,51 +385,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ),
         );
       }).toList(),
-    );
-  }
-
-  Widget _buildBottomBar(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return GestureDetector(
-      onTap: () {
-        context.read<CartCubit>().addToCart(
-              widget.product,
-              selectedSize: _shouldShowSizeSelector ? selectedSize : null,
-            );
-        _showAddedToCartSnackBar(context);
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          boxShadow: [
-            BoxShadow(
-              color: isDark
-                  ? Colors.white.withOpacity(0.05)
-                  : Colors.black.withOpacity(0.15),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.shopping_bag_outlined, size: 22, color: Colors.white),
-            SizedBox(width: 8),
-            Text(
-              'Add to Cart',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

@@ -14,6 +14,8 @@ class CartItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Dismissible(
       key: Key(cartItem.id),
       direction: DismissDirection.endToStart,
@@ -54,11 +56,13 @@ class CartItemWidget extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
+          color: isDark ? Colors.grey[900] : Colors.grey[100],
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: isDark
+                  ? Colors.white.withOpacity(0.05)
+                  : Colors.black.withOpacity(0.15),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -93,10 +97,9 @@ class CartItemWidget extends StatelessWidget {
   Widget _buildProductImage(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: Container(
+      child: SizedBox(
         width: 80,
         height: 80,
-        color: Colors.grey[100],
         child: CachedNetworkImage(
           imageUrl: cartItem.product.image,
           fit: BoxFit.contain,
@@ -126,19 +129,11 @@ class CartItemWidget extends StatelessWidget {
   }
 
   Widget _buildSizeInfo(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        'Size: ${cartItem.selectedSize}',
-        style: TextStyle(
-          fontSize: 12,
-          color: Theme.of(context).primaryColor,
-          fontWeight: FontWeight.w500,
-        ),
+    return Text(
+      'Size: ${cartItem.selectedSize}',
+      style: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w300,
       ),
     );
   }
@@ -153,18 +148,13 @@ class CartItemWidget extends StatelessWidget {
           children: [
             Text(
               '\$${cartItem.product.price.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             if (cartItem.quantity > 1)
               Text(
                 'Subtotal: \$${cartItem.subtotal.toStringAsFixed(2)}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
-                  color: Colors.grey[600],
                 ),
               ),
           ],
