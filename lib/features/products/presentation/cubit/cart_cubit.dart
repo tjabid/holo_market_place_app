@@ -2,10 +2,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/cart/cart.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/cart/cart_item.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/product.dart';
+import 'package:holo_market_place_app/features/products/domain/usecases/cart/get_cart.dart';
 import 'package:holo_market_place_app/features/products/presentation/cubit/cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
-  CartCubit() : super(const CartEmpty());
+  final GetCartUseCase getCartUseCase;
+
+  CartCubit({required this.getCartUseCase}) : super(const CartEmpty());
 
   // Promo codes map (code -> discount amount)
   final Map<String, double> _promoCodes = {
