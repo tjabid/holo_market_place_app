@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/product.dart';
+import '../cubit/cart_cubit.dart';
 import '../pages/product_detail_page.dart';
 
 class ProductGrid extends StatelessWidget {
@@ -66,7 +68,10 @@ class _ProductCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductDetailPage(product: product),
+            builder: (context) => BlocProvider.value(
+              value: context.read<CartCubit>(),
+              child: ProductDetailPage(product: product),
+            ),
           ),
         );
       },
