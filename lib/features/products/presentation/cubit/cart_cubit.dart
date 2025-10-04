@@ -100,8 +100,17 @@ class CartCubit extends Cubit<CartState> {
     final currentState = state;
     if (currentState is! CartLoaded) return;
 
-    final item = currentState.cart.items.firstWhere((item) => item.id == cartItemId);
-    updateQuantity(cartItemId, item.quantity + 1);
+    try {
+      final item = currentState.cart.items.firstWhere(
+        (item) => item.id == cartItemId,
+        orElse: () => throw StateError('Cart item not found'),
+      );
+      updateQuantity(cartItemId, item.quantity + 1);
+    } catch (e) {
+      // Item not found, do nothing or optionally emit an error state
+      emit(const CartError('Item not found in cart'));
+      return;
+    }
   }
 
   // Decrement quantity
@@ -109,8 +118,17 @@ class CartCubit extends Cubit<CartState> {
     final currentState = state;
     if (currentState is! CartLoaded) return;
 
-    final item = currentState.cart.items.firstWhere((item) => item.id == cartItemId);
-    updateQuantity(cartItemId, item.quantity - 1);
+    try {
+      final item = currentState.cart.items.firstWhere(
+        (item) => item.id == cartItemId,
+        orElse: () => throw StateError('Cart item not found'),
+      );
+      updateQuantity(cartItemId, item.quantity - 1);
+    } catch (e) {
+      // Item not found, do nothing or optionally emit an error state
+      emit(const CartError('Item not found in cart'));
+      return;
+    }
   }
 
   // Apply promo code

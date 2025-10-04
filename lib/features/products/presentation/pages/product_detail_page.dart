@@ -177,6 +177,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Widget _buildProductImage() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
+    // Cache the image height calculation to avoid repeated computation
+    final imageHeight = _ProductDetailConstants.imageHeight(context);
+    final cacheSize = (imageHeight * MediaQuery.of(context).devicePixelRatio).toInt();
+    
     return Container(
       width: double.infinity,
       height: _ProductDetailConstants.imageContainerHeight(context),
@@ -188,7 +192,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             child: CachedNetworkImage(
               imageUrl: widget.product.image,
               fit: BoxFit.contain,
-              height: _ProductDetailConstants.imageHeight(context),
+              height: imageHeight,
               placeholder: (context, url) => Center(
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
@@ -240,8 +244,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 );
               },
               // Cache optimization
-              memCacheHeight: (_ProductDetailConstants.imageHeight(context) * MediaQuery.of(context).devicePixelRatio).toInt(),
-              maxHeightDiskCache: (_ProductDetailConstants.imageHeight(context) * MediaQuery.of(context).devicePixelRatio).toInt(),
+              memCacheHeight: cacheSize,
+              maxHeightDiskCache: cacheSize,
             ),
           ),
 

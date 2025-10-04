@@ -66,7 +66,7 @@ class ApiClient {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return json.decode(response.body);
     } else if (response.statusCode == 404) {
-      throw const ServerException('Resource not found');
+      throw ServerException('Resource not found');
     } else if (response.statusCode >= 500) {
       throw ServerException('Server error: ${response.statusCode}');
     } else {
