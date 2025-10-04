@@ -19,18 +19,6 @@ class _ProductDetailConstants {
   static double imageHeight(BuildContext context) {
     return imageContainerHeight(context) * 0.875; // 87.5% of container
   }
-
-  static double titleFontSize(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    if (screenWidth > 600) return 22; // Tablet
-    return 18; // Phone
-  }
-
-  static double bodyFontSize(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    if (screenWidth > 600) return 14; // Tablet
-    return 12; // Phone
-  }
 }
 
 class ProductDetailPage extends StatefulWidget {
@@ -74,44 +62,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Stack(
-                    children: [
-                      // Product Image with floating buttons on top
-                      _buildProductImage(),
-
-                      // Favorite button
-                      Positioned(
-                        bottom: -24, // Half of button height (48/2 = 24)
-                        right: 20,
-                        child: CustomFloatingActionButton(
-                          icon: isFavorite
-                              ? Icons.favorite
-                              : Icons.favorite_border,
-                          onTap: () {
-                            setState(() {
-                              isFavorite = !isFavorite;
-                            });
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  isFavorite
-                                      ? 'Added to favorites'
-                                      : 'Removed from favorites',
-                                ),
-                                duration: const Duration(seconds: 1),
-                              ),
-                            );
-                          },
-                          semanticLabel: isFavorite
-                              ? 'Remove ${widget.product.title} from favorites'
-                              : 'Add ${widget.product.title} to favorites',
-                          semanticHint: 'Double tap to toggle favorite',
-                          iconColor: isFavorite ? Colors.red : null,
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Product Image with floating buttons on top
+                  _buildProductImage(),
 
                   // Product Details
                   Padding(
@@ -119,8 +71,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Title
-
+                        // Title and Price Row
                         Row(
                           children: [
                             Expanded(
@@ -144,58 +95,23 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 ),
                               ),
                             ),
-                            // Expanded(
-                            //   flex: 1,
-                            //   child: Align(
-                            //     alignment: Alignment.centerRight,
-                            //     child: IconButton(
-                            //       icon: Icon(
-                            //         isFavorite
-                            //             ? Icons.favorite
-                            //             : Icons.favorite_border,
-                            //         color:
-                            //             isFavorite ? Colors.red : Colors.grey[600],
-                            //         size: 24,
-                            //       ),
-                            //       onPressed: () {
-                            //         setState(() {
-                            //           isFavorite = !isFavorite;
-                            //         });
-
-                            //         ScaffoldMessenger.of(context).showSnackBar(
-                            //           SnackBar(
-                            //             content: Text(
-                            //               isFavorite
-                            //                   ? 'Added to favorites'
-                            //                   : 'Removed from favorites',
-                            //             ),
-                            //             duration: const Duration(seconds: 1),
-                            //           ),
-                            //         );
-                            //       },
-                            //     ),
-                            //   ),
-                            // ),
                           ],
                         ),
 
                         const SizedBox(height: 20),
-
                         // Separator
                         Divider(
                           color: Colors.grey[200],
                           thickness: 0.5,
                           height: 1,
                         ),
-
                         const SizedBox(height: 20),
 
                         // Description
                         Text(
                           widget.product.description,
-                          style: TextStyle(
-                            fontSize:
-                                _ProductDetailConstants.bodyFontSize(context),
+                          style: const TextStyle(
+                            fontSize: 12,
                             height: 1.5,
                           ),
                         ),
@@ -209,8 +125,38 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         ),
                         const SizedBox(height: 20),
 
-                        // Rating
-                        _buildRating(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Star icons and rating value
+                            _buildRating(),
+
+                            IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isFavorite = !isFavorite;
+                                  });
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        isFavorite
+                                            ? 'Added to favorites'
+                                            : 'Removed from favorites',
+                                      ),
+                                      duration: const Duration(seconds: 1),
+                                    ),
+                                  );
+                                },
+                                icon: Icon(
+                                  isFavorite
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  size: 28,
+                                  color: isFavorite ? Colors.red : null,
+                                )),
+                          ],
+                        ),
 
                         const SizedBox(height: 20),
                         // Separator
@@ -330,116 +276,65 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           statusBarHeight,
       padding: EdgeInsets.only(top: statusBarHeight),
       color: isDark ? Colors.grey[900] : Colors.grey[100],
-      child: Stack(
-        children: [
-          // back button
-          // Positioned(
-          //   top: 20,
-          //   left: 20,
-          //   child: CustomFloatingActionButton(
-          //     icon: Icons.arrow_back,
-          //     onTap: () => Navigator.pop(context),
-          //     semanticLabel: 'Go back to product list',
-          //     semanticHint: 'Go back to product list',
-          //   ),
-          // ),
-
-          // Product Image
-          Center(
-            child: CachedNetworkImage(
-              imageUrl: widget.product.image,
-              fit: BoxFit.contain,
-              height: imageHeight,
-              placeholder: (context, url) => Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-              errorWidget: (context, url, error) {
-                // Log error for debugging
-                debugPrint('Failed to load product image: $error');
-
-                final isDarkError =
-                    Theme.of(context).brightness == Brightness.dark;
-
-                return Container(
-                  color: isDarkError ? Colors.grey[900] : Colors.grey[200],
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.image_not_supported,
-                        color:
-                            isDarkError ? Colors.grey[600] : Colors.grey[400],
-                        size: 80,
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Failed to load image',
-                        style: TextStyle(
-                          color:
-                              isDarkError ? Colors.grey[400] : Colors.grey[600],
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextButton.icon(
-                        onPressed: () {
-                          setState(() {}); // Trigger rebuild to retry loading
-                        },
-                        icon: Icon(
-                          Icons.refresh,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        label: Text(
-                          'Retry',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              // Cache optimization
-              memCacheHeight: cacheSize,
-              maxHeightDiskCache: cacheSize,
+      child: Center(
+        child: CachedNetworkImage(
+          imageUrl: widget.product.image,
+          fit: BoxFit.contain,
+          height: imageHeight,
+          placeholder: (context, url) => Center(
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Theme.of(context).primaryColor,
             ),
           ),
+          errorWidget: (context, url, error) {
+            // Log error for debugging
+            debugPrint('Failed to load product image: $error');
 
-          // Favorite Button with accessibility
-          // Positioned(
-          //   top: 20,
-          //   right: 20,
-          //   child: CustomFloatingActionButton(
-          //     icon: isFavorite ? Icons.favorite : Icons.favorite_border,
-          //     onTap: () {
-          //       setState(() {
-          //         isFavorite = !isFavorite;
-          //       });
+            final isDarkError = Theme.of(context).brightness == Brightness.dark;
 
-          //       // Show feedback for accessibility
-          //       ScaffoldMessenger.of(context).showSnackBar(
-          //         SnackBar(
-          //           content: Text(
-          //             isFavorite
-          //                 ? 'Added to favorites'
-          //                 : 'Removed from favorites',
-          //           ),
-          //           duration: const Duration(seconds: 1),
-          //         ),
-          //       );
-          //     },
-          //     semanticLabel: isFavorite
-          //         ? 'Remove ${widget.product.title} from favorites'
-          //         : 'Add ${widget.product.title} to favorites',
-          //     semanticHint: 'Double tap to toggle favorite',
-          //     iconColor: isFavorite ? Colors.red : null,
-          //   ),
-          // ),
-        ],
+            return Container(
+              color: isDarkError ? Colors.grey[900] : Colors.grey[200],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.image_not_supported,
+                    color: isDarkError ? Colors.grey[600] : Colors.grey[400],
+                    size: 80,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Failed to load image',
+                    style: TextStyle(
+                      color: isDarkError ? Colors.grey[400] : Colors.grey[600],
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: () {
+                      setState(() {}); // Trigger rebuild to retry loading
+                    },
+                    icon: Icon(
+                      Icons.refresh,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    label: Text(
+                      'Retry',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+          // Cache optimization
+          memCacheHeight: cacheSize,
+          maxHeightDiskCache: cacheSize,
+        ),
       ),
     );
   }

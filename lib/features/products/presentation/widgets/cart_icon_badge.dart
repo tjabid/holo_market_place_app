@@ -9,6 +9,8 @@ class CartIconBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
         int itemCount = 0;
@@ -32,15 +34,15 @@ class CartIconBadge extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: isDark ? Colors.black : Colors.white,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                const Icon(
+                Icon(
                   Icons.shopping_cart_outlined,
-                  color: Colors.white,
+                  color: Theme.of(context).iconTheme.color,
                   size: 22,
                 ),
                 if (itemCount > 0)

@@ -164,6 +164,8 @@ class ProductListPage extends StatelessWidget {
   }
 
   Widget _buildBottomNavigationBar(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       decoration: BoxDecoration(
@@ -171,7 +173,7 @@ class ProductListPage extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: isDark ? Colors.white.withOpacity(0.15) : Colors.black.withOpacity(0.15),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
