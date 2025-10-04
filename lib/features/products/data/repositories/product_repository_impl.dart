@@ -4,6 +4,7 @@ import '../../../../core/error/failures.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/repositories/product_repository.dart';
 import '../datasources/product_remote_datasource.dart';
+import '../mappers/product_mapper.dart';
 
 class ProductRepositoryImpl implements ProductRepository {
   final ProductRemoteDataSource remoteDataSource;
@@ -14,7 +15,7 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<Either<Failure, List<Product>>> getProducts() async {
     try {
       final products = await remoteDataSource.getProducts();
-      return Right(products.map((model) => model.toEntity()).toList());
+      return Right(products.map((model) => mapProductEntity(model)).toList());
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
@@ -28,7 +29,7 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<Either<Failure, Product>> getProductById(int id) async {
     try {
       final product = await remoteDataSource.getProductById(id);
-      return Right(product.toEntity());
+      return Right(mapProductEntity(product));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
@@ -43,7 +44,7 @@ class ProductRepositoryImpl implements ProductRepository {
       String category) async {
     try {
       final products = await remoteDataSource.getProductsByCategory(category);
-      return Right(products.map((model) => model.toEntity()).toList());
+      return Right(products.map((model) => mapProductEntity(model)).toList());
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
