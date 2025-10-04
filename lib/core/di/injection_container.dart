@@ -3,7 +3,9 @@ import 'package:holo_market_place_app/features/products/data/datasources/cart/ca
 import 'package:holo_market_place_app/features/products/data/datasources/cart/cart_remote_datasource.dart';
 import 'package:holo_market_place_app/features/products/data/repositories/cart_repository_impl.dart';
 import 'package:holo_market_place_app/features/products/domain/repositories/cart_repository.dart';
+import 'package:holo_market_place_app/features/products/domain/usecases/cart/add_to_cart.dart';
 import 'package:holo_market_place_app/features/products/domain/usecases/cart/get_cart.dart';
+import 'package:holo_market_place_app/features/products/domain/usecases/cart/remove_from_cart.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -60,8 +62,8 @@ Future<void> init() async {
 
   // Use Cases
   sl.registerLazySingleton(() => GetCartUseCase(sl()));
-  sl.registerLazySingleton(() => GetProductsByCategoryUseCase(sl()));
-  sl.registerLazySingleton(() => GetCategoriesUseCase(sl()));
+  sl.registerLazySingleton(() => AddToCartUseCase(sl()));
+  sl.registerLazySingleton(() => RemoveFromCartUseCase(sl()));
 
   // Repositories
   sl.registerLazySingleton<CartRepository>(
