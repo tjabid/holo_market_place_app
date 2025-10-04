@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../constants/api_constants.dart';
 import '../error/exceptions.dart';
@@ -63,10 +64,12 @@ class ApiClient {
   }
 
   dynamic _handleResponse(http.Response response) {
+    debugPrint("API Response: ${response.request?.url} ${response.statusCode}");
+    debugPrint("Response Body: ${response.body}");
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return json.decode(response.body);
     } else if (response.statusCode == 404) {
-      throw ServerException('Resource not found');
+      throw const ServerException('Resource not found');
     } else if (response.statusCode >= 500) {
       throw ServerException('Server error: ${response.statusCode}');
     } else {

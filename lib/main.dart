@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:holo_market_place_app/features/settings/settings_view.dart';
 
 import 'core/di/injection_container.dart' as di;
 import 'core/theme/app_theme.dart';
 import 'features/products/presentation/cubit/products_cubit.dart';
 import 'features/products/presentation/cubit/cart_cubit.dart';
-import 'features/products/presentation/pages/product_list_page.dart';
+import 'features/products/presentation/widgets/product_list_page.dart';
+import 'features/products/presentation/pages/coming_soon_page.dart';
+import 'features/products/presentation/pages/cart.dart';
 import 'features/settings/settings_controller.dart';
 import 'features/settings/settings_service.dart';
 
@@ -61,6 +62,21 @@ class MyApp extends StatelessWidget {
             darkTheme: AppTheme.darkTheme,
             themeMode: settingsController.themeMode,
             home: const ProductListPage(),
+            routes: {
+              '/cart': (context) => const CartPage(),
+              '/search': (context) => const ComingSoonPage(
+                featureName: 'Search',
+                icon: Icons.search,
+              ),
+              '/favorites': (context) => const ComingSoonPage(
+                featureName: 'Favorites',
+                icon: Icons.favorite,
+              ),
+              '/profile': (context) => const ComingSoonPage(
+                featureName: 'Profile',
+                icon: Icons.person,
+              ),
+            },
           );
         },
       ),
