@@ -35,6 +35,33 @@ class ApiClient {
     }
   }
 
+  Future<dynamic> put(String endpoint, Map<String, dynamic> body) async {
+    try {
+      final response = await client.put(
+        Uri.parse('${ApiConstants.baseUrl}$endpoint'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(body),
+      );
+
+      return _handleResponse(response);
+    } catch (e) {
+      throw NetworkException('Failed to connect to server: $e');
+    }
+  }
+
+  Future<dynamic> delete(String endpoint) async {
+    try {
+      final response = await client.delete(
+        Uri.parse('${ApiConstants.baseUrl}$endpoint'),
+        headers: {'Content-Type': 'application/json'}
+      );
+
+      return _handleResponse(response);
+    } catch (e) {
+      throw NetworkException('Failed to connect to server: $e');
+    }
+  }
+
   dynamic _handleResponse(http.Response response) {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return json.decode(response.body);

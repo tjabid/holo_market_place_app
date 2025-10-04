@@ -5,6 +5,7 @@ import '../cubit/products_state.dart';
 import '../widgets/product_grid.dart';
 import '../widgets/category_filter_chips.dart';
 import '../widgets/error_view.dart';
+import '../widgets/cart_icon_badge.dart';
 
 class ProductListPage extends StatelessWidget {
   const ProductListPage({super.key});
@@ -12,7 +13,7 @@ class ProductListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -104,18 +105,8 @@ class ProductListPage extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.tune,
-              color: Colors.white,
-              size: 22,
-            ),
-          ),
+          // Cart Icon with Badge
+          const CartIconBadge(),
         ],
       ),
     );

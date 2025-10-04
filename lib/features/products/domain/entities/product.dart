@@ -32,4 +32,17 @@ class Product extends Equatable {
         rating,
         ratingCount,
       ];
+
+  static Product empty() {
+    return const Product(
+      id: 0,
+      title: '',
+      price: 0.0,
+      description: '',
+      category: '',
+      image: '',
+      rating: 0.0,
+      ratingCount: 0,
+    );
+  }
 }

@@ -1,15 +1,22 @@
-import '../../domain/entities/product.dart';
+class ProductDto {
+  final int id;
+  final String title;
+  final double price;
+  final String description;
+  final String category;
+  final String image;
+  final double rating;
+  final int ratingCount;
 
-class ProductDto extends Product {
   const ProductDto({
-    required super.id,
-    required super.title,
-    required super.price,
-    required super.description,
-    required super.category,
-    required super.image,
-    required super.rating,
-    required super.ratingCount,
+    required this.id,
+    required this.title,
+    required this.price,
+    required this.description,
+    required this.category,
+    required this.image,
+    required this.rating,
+    required this.ratingCount,
   });
 
   factory ProductDto.fromJson(Map<String, dynamic> json) {
@@ -37,17 +44,4 @@ class ProductDto extends Product {
           'count': ratingCount,
         },
       };
-
-  Product toEntity() {
-    return Product(
-      id: id,
-      title: title,
-      price: price,
-      description: description,
-      category: category,
-      image: image,
-      rating: rating,
-      ratingCount: ratingCount,
-    );
-  }
 }
