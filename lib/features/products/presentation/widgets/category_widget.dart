@@ -17,12 +17,15 @@ class CategoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: categories.map((category) {
-          debugPrint('Rendering category: ${category.id}, selectedCategory: $selectedCategory');
+          debugPrint(
+              'Rendering category: ${category.id}, selectedCategory: $selectedCategory');
           final isSelected = category.id == selectedCategory;
           return GestureDetector(
             onTap: () => onCategorySelected(category.id),
@@ -31,7 +34,9 @@ class CategoryWidget extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: isSelected ? Colors.black : Colors.white,
+                    color: isSelected ? 
+                    (isDark ? Colors.white : Colors.black) : 
+                    (isDark ? Colors.grey[900] : Colors.white),
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
@@ -43,7 +48,9 @@ class CategoryWidget extends StatelessWidget {
                   ),
                   child: Icon(
                     category.icon,
-                    color: isSelected ? Colors.white : Colors.grey[600],
+                    color: isSelected
+                        ? (isDark ? Colors.grey[600] : Colors.white)
+                        : (isDark ? Colors.white : Colors.grey[600]),
                     size: 24,
                   ),
                 ),
@@ -52,8 +59,11 @@ class CategoryWidget extends StatelessWidget {
                   category.displayName,
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                    color: isSelected ? Colors.black : Colors.grey[600],
+                    fontWeight:
+                        isSelected ? FontWeight.w600 : FontWeight.normal,
+                    color: isSelected 
+                    ? (isDark ? Colors.white : Colors.black) 
+                    : (isDark ? Colors.grey[400] : Colors.grey[600]),
                   ),
                 ),
               ],
