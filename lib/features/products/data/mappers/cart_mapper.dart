@@ -6,17 +6,17 @@ import '../../domain/entities/cart/cart.dart';
 import '../dto/cart/cart_dto.dart';
 
 Cart mapCartDtoToEntity(CartDto dto, List<Product> products) {
+  final productMap = { for (var p in products) p.id : p };
   return Cart(
     id: dto.id,
     items: dto.products
         .map((itemDto) => mapCartItemDtoToEntity(
               itemDto,
-              products.firstWhere((p) => p.id == itemDto.productId, orElse: () => Product.empty()),
+              productMap[itemDto.productId] ?? Product.empty(),
             ))
         .toList(),
     shippingCost: dto.shippingCost,
   );
-  }
 
   CartItem mapCartItemDtoToEntity(CartProductDto dto, Product product) {
     return CartItem(
