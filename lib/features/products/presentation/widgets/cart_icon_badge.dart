@@ -5,7 +5,8 @@ import '../cubit/cart_state.dart';
 import '../pages/cart.dart';
 
 class CartIconBadge extends StatelessWidget {
-  const CartIconBadge({super.key});
+  final bool removeBackground;
+  const CartIconBadge({super.key, this.removeBackground = false});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class CartIconBadge extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           child: Container(
             padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
+            decoration: removeBackground ? null : BoxDecoration(
               color: isDark ? Colors.black : Colors.white,
               borderRadius: BorderRadius.circular(12),
             ),
