@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/product.dart';
+import '../cubit/cart_cubit.dart';
+import '../widgets/cart_icon_badge.dart';
 
 // Responsive constants for ProductDetailPage
 class _ProductDetailConstants {
@@ -163,17 +166,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ),
       ),
       centerTitle: true,
-      actions: [
-        IconButton(
-          icon: Icon(
-            Icons.notifications_outlined,
-            color: Theme.of(context).iconTheme.color,
-            size: 28,
-          ),
-          onPressed: () {
-            // Handle notifications
-          },
-        ),
+      
+      actions: const [
+        CartIconBadge(),
+        SizedBox(width: 12),
       ],
     );
   }
@@ -444,6 +440,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 hint: 'Double tap to add item to shopping cart',
                 child: ElevatedButton(
                   onPressed: () {
+                    // Add to cart using CartCubit
+                    context.read<CartCubit>().addToCart(
+                      widget.product,
+                      selectedSize: _shouldShowSizeSelector ? selectedSize : null,
+                    );
                     _showAddedToCartSnackBar(context);
                   },
                   style: ElevatedButton.styleFrom(
