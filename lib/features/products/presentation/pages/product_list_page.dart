@@ -180,15 +180,45 @@ class ProductListPage extends StatelessWidget {
           ),
         ],
       ),
-      child: const SafeArea(
+      child: SafeArea(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _NavBarItem(icon: Icons.home_outlined, isSelected: true),
-            _NavBarItem(icon: Icons.search_outlined, isSelected: false),
-            _NavBarItem(icon: Icons.shopping_bag_outlined, isSelected: false),
-            _NavBarItem(icon: Icons.favorite_border, isSelected: false),
-            _NavBarItem(icon: Icons.person_outline, isSelected: false),
+            _NavBarItem(
+              icon: Icons.home_outlined, 
+              isSelected: true,
+              onTap: () {
+                // Already on home page
+              },
+            ),
+            _NavBarItem(
+              icon: Icons.search_outlined, 
+              isSelected: false,
+              onTap: () {
+                Navigator.pushNamed(context, '/search');
+              },
+            ),
+            _NavBarItem(
+              icon: Icons.shopping_bag_outlined, 
+              isSelected: false,
+              onTap: () {
+                Navigator.pushNamed(context, '/cart');
+              },
+            ),
+            _NavBarItem(
+              icon: Icons.favorite_border, 
+              isSelected: false,
+              onTap: () {
+                Navigator.pushNamed(context, '/favorites');
+              },
+            ),
+            _NavBarItem(
+              icon: Icons.person_outline, 
+              isSelected: false,
+              onTap: () {
+                Navigator.pushNamed(context, '/profile');
+              },
+            ),
           ],
         ),
       ),
@@ -200,23 +230,28 @@ class _NavBarItem extends StatelessWidget {
   const _NavBarItem({
     required this.icon,
     required this.isSelected,
+    required this.onTap,
   });
 
   final IconData icon;
   final bool isSelected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.white.withOpacity(0.1) : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Icon(
-        icon,
-        color: isSelected ? Colors.black : Colors.grey[400],
-        size: 28,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white.withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(
+          icon,
+          color: isSelected ? Colors.black : Colors.grey[400],
+          size: 28,
+        ),
       ),
     );
   }
