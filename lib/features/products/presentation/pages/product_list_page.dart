@@ -120,7 +120,7 @@ class ProductListPage extends StatelessWidget {
                 ),
               ],
             ),
-            child: const Icon(Icons.notifications_outlined, size: 24),
+            child: const Icon(Icons.tune_outlined, size: 24),
           ),
         ],
       ),

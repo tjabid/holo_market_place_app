@@ -6,6 +6,7 @@ import 'package:holo_market_place_app/features/products/presentation/widgets/car
 import 'package:holo_market_place_app/features/products/presentation/widgets/cart/cart_summary_widget.dart';
 import 'package:holo_market_place_app/features/products/presentation/widgets/cart/empty_cart_widget.dart';
 
+import '../widgets/cart/promo_code_section.dart';
 import '../widgets/common/buttom_button.dart';
 import '../widgets/common/error_view.dart';
 
@@ -94,8 +95,8 @@ class CartPage extends StatelessWidget {
           ),
         ),
 
-        // // todo - Promo Code Section
-        // const PromoCodeSection(),
+        // Promo Code Section
+        const PromoCodeSection(),
 
         // Cart Summary
         CartSummaryWidget(cart: state.cart),
