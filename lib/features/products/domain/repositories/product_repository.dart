@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:holo_market_place_app/features/products/domain/entities/category.dart';
+import 'package:holo_market_place_app/features/products/domain/entities/product/category.dart';
 import '../../../../core/error/failures.dart';
-import '../entities/product.dart';
+import '../entities/product/product.dart';
 
 abstract class ProductRepository {
   Future<Either<Failure, List<Product>>> getProducts();

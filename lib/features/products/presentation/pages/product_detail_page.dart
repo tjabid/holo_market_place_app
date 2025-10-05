@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/product.dart';
-import '../cubit/cart_cubit.dart';
-import '../widgets/buttom_button.dart';
-import '../widgets/cart_icon_badge.dart';
-import '../widgets/floating_action_button.dart';
+import '../../domain/entities/product/product.dart';
+import '../cubit/cart/cart_cubit.dart';
+import '../widgets/common/buttom_button.dart';
+import '../widgets/common/cart_icon_badge.dart';
+import '../widgets/common/floating_action_button.dart';
 
 // Responsive constants for ProductDetailPage
 class _ProductDetailConstants {
@@ -216,16 +216,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       leading: Semantics(
         label: 'Go back to product list',
         button: true,
-        child: Positioned(
-          top: 50,
-          left: 20,
-          child: CustomFloatingActionButton(
-            padding: 0,
-            icon: Icons.arrow_back,
-            onTap: () => Navigator.pop(context),
-            semanticLabel: 'Go back to product list',
-            semanticHint: 'Go back to product list',
-          ),
+        child: CustomFloatingActionButton(
+          padding: 0,
+          icon: Icons.arrow_back,
+          onTap: () => Navigator.pop(context),
+          semanticLabel: 'Go back to product list',
+          semanticHint: 'Go back to product list',
         ),
       ),
       actions: const [

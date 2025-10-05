@@ -3,7 +3,7 @@ import 'package:holo_market_place_app/core/error/exceptions.dart';
 import 'package:holo_market_place_app/core/error/failures.dart';
 import 'package:holo_market_place_app/features/products/data/datasources/cart/cart_local_datasource.dart';
 import 'package:holo_market_place_app/features/products/data/datasources/cart/cart_remote_datasource.dart';
-import 'package:holo_market_place_app/features/products/data/datasources/product_remote_datasource.dart';
+import 'package:holo_market_place_app/features/products/data/datasources/product/product_remote_datasource.dart';
 import 'package:holo_market_place_app/features/products/data/mappers/product_mapper.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/cart/cart.dart';
 

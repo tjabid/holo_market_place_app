@@ -1,5 +1,5 @@
 import 'package:holo_market_place_app/core/error/exceptions.dart';
-import 'package:holo_market_place_app/features/products/domain/entities/product.dart';
+import 'package:holo_market_place_app/features/products/domain/entities/product/product.dart';
 import '../../../../../core/constants/api_constants.dart';
 import '../../../../../core/network/api_client.dart';
 import '../../dto/cart/cart_dto.dart';

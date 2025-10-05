@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../widgets/category_widget.dart';
-import '../cubit/products_cubit.dart';
-import '../cubit/products_state.dart';
-import '../widgets/nav_bar_item.dart';
-import '../widgets/product_grid.dart';
-import '../widgets/error_view.dart';
-import '../widgets/cart_icon_badge.dart';
+import '../widgets/product/category_widget.dart';
+import '../cubit/product/products_cubit.dart';
+import '../cubit/product/products_state.dart';
+import '../widgets/product/nav_bar_item.dart';
+import '../widgets/product/product_grid.dart';
+import '../widgets/common/error_view.dart';
+import '../widgets/common/cart_icon_badge.dart';
 
 class ProductListPage extends StatelessWidget {
   const ProductListPage({super.key});

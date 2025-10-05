@@ -13,14 +13,14 @@ import 'package:holo_market_place_app/features/products/domain/usecases/cart/car
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../features/products/data/datasources/product_remote_datasource.dart';
+import '../../features/products/data/datasources/product/product_remote_datasource.dart';
 import '../../features/products/data/repositories/product_repository_impl.dart';
 import '../../features/products/domain/repositories/product_repository.dart';
-import '../../features/products/domain/usecases/get_products.dart';
-import '../../features/products/domain/usecases/get_products_by_category.dart';
-import '../../features/products/domain/usecases/get_categories.dart';
-import '../../features/products/presentation/cubit/products_cubit.dart';
-import '../../features/products/presentation/cubit/cart_cubit.dart';
+import '../../features/products/domain/usecases/product/get_products.dart';
+import '../../features/products/domain/usecases/product/get_products_by_category.dart';
+import '../../features/products/domain/usecases/product/get_categories.dart';
+import '../../features/products/presentation/cubit/product/products_cubit.dart';
+import '../../features/products/presentation/cubit/cart/cart_cubit.dart';
 import '../network/api_client.dart';
 
 final sl = GetIt.instance;

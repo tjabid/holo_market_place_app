@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:holo_market_place_app/features/products/domain/repositories/cart_repository.dart';
 import '../../entities/cart/cart.dart';
 import '../../entities/cart/cart_item.dart';
-import '../../entities/product.dart';
+import '../../entities/product/product.dart';
 import '../../../../../core/error/failures.dart';
 
 class AddToCartUseCase {

@@ -7,8 +7,8 @@ import 'dart:async' as _i4;
 
 import 'package:dartz/dartz.dart' as _i2;
 import 'package:holo_market_place_app/core/error/failures.dart' as _i5;
-import 'package:holo_market_place_app/features/products/domain/entities/category.dart';
-import 'package:holo_market_place_app/features/products/domain/entities/product.dart'
+import 'package:holo_market_place_app/features/products/domain/entities/product/category.dart';
+import 'package:holo_market_place_app/features/products/domain/entities/product/product.dart'
     as _i6;
 import 'package:holo_market_place_app/features/products/domain/repositories/product_repository.dart'
     as _i3;

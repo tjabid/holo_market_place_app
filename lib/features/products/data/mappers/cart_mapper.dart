@@ -1,6 +1,6 @@
 import 'package:holo_market_place_app/features/products/data/dto/cart/cart_product_dto.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/cart/cart_item.dart';
-import 'package:holo_market_place_app/features/products/domain/entities/product.dart';
+import 'package:holo_market_place_app/features/products/domain/entities/product/product.dart';
 
 import '../../domain/entities/cart/cart.dart';
 import '../dto/cart/cart_dto.dart';

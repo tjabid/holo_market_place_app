@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../domain/entities/category.dart';
+import '../../../domain/entities/product/category.dart';
 
 class CategoryWidget extends StatelessWidget {
   const CategoryWidget({

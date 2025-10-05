@@ -1,4 +1,4 @@
-import '../../domain/entities/product.dart';
+import '../../domain/entities/product/product.dart';
 import '../dto/product_dto.dart';
 
 Product mapProductEntity(ProductDto dto) {

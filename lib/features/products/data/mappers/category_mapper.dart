@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:holo_market_place_app/features/products/domain/entities/category.dart';
+import 'package:holo_market_place_app/features/products/domain/entities/product/category.dart';
 
 Category mapStringToCategory(String category, bool isSelected) {
   return Category(

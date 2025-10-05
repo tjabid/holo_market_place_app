@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
-import 'package:holo_market_place_app/features/products/domain/entities/category.dart';
+import 'package:holo_market_place_app/features/products/domain/entities/product/category.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
-import '../../domain/entities/product.dart';
+import '../../domain/entities/product/product.dart';
 import '../../domain/repositories/product_repository.dart';
 import '../datasources/product/product_local_datasource.dart';
-import '../datasources/product_remote_datasource.dart';
+import '../datasources/product/product_remote_datasource.dart';
 import '../mappers/product_mapper.dart';
 
 class ProductRepositoryImpl implements ProductRepository {

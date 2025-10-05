@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../cubit/cart_cubit.dart';
-import '../cubit/cart_state.dart';
-import '../pages/cart.dart';
+import '../../cubit/cart/cart_cubit.dart';
+import '../../cubit/cart/cart_state.dart';
+import '../../pages/cart.dart';
 
 class CartIconBadge extends StatelessWidget {
   final bool removeBackground;

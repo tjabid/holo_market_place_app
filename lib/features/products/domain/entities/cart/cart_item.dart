@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../product.dart';
+import '../product/product.dart';
 
 class CartItem extends Equatable {
   final String id; // Unique cart item ID

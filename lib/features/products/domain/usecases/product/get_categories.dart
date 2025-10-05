@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:holo_market_place_app/features/products/domain/entities/category.dart';
-import '../../../../core/error/failures.dart';
-import '../repositories/product_repository.dart';
+import 'package:holo_market_place_app/features/products/domain/entities/product/category.dart';
+import '../../../../../core/error/failures.dart';
+import '../../repositories/product_repository.dart';
 
 class GetCategoriesUseCase {
   final ProductRepository repository;

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:holo_market_place_app/features/products/presentation/cubit/cart_cubit.dart';
-import 'package:holo_market_place_app/features/products/presentation/cubit/cart_state.dart';
-import 'package:holo_market_place_app/features/products/presentation/widgets/cart_item_widget.dart';
-import 'package:holo_market_place_app/features/products/presentation/widgets/cart_summary_widget.dart';
-import 'package:holo_market_place_app/features/products/presentation/widgets/empty_cart_widget.dart';
+import 'package:holo_market_place_app/features/products/presentation/cubit/cart/cart_cubit.dart';
+import 'package:holo_market_place_app/features/products/presentation/cubit/cart/cart_state.dart';
+import 'package:holo_market_place_app/features/products/presentation/widgets/cart/cart_item_widget.dart';
+import 'package:holo_market_place_app/features/products/presentation/widgets/cart/cart_summary_widget.dart';
+import 'package:holo_market_place_app/features/products/presentation/widgets/cart/empty_cart_widget.dart';
 
-import '../widgets/buttom_button.dart';
-import '../widgets/error_view.dart';
+import '../widgets/common/buttom_button.dart';
+import '../widgets/common/error_view.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
