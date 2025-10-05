@@ -95,37 +95,37 @@ dependencies:
 ---
 ## Key Features Implemented
 
-### ✅ Product List
+### 1. Product List
 - Fetches products from `FakeStoreAPI`
 - Displays in 2-column grid
 - Shows: image, title, price, category, rating
 - Pull-to-refresh
 
-### ✅ Category Filtering
+### 2. Category Filtering
 - Dynamic categories from API
 - "All Items" + men's/women's clothing, jewelery, electronics
 - Filter products with icons
 - Real-time filtering
 
-### ✅ Error Handling
+### 3. Error Handling
 - Network errors
 - Server errors
 - Retry functionality
 - User-friendly error messages
 
-### ✅ Loading States
+### 4. Loading States
 - Custom shimmer loading animation
 - Smooth transitions
 - No jarring state changes
 
-### ✅ Modern UI/UX
+### 5. Modern UI/UX
 - Clean, minimal design
 - Rounded corners
 - White cards with shadows
 - Black accent color
 - Bottom navigation bar
 
-### ✅ Dark and Light Themes
+### 6. Dark and Light Themes
 - Seamlessly switches modes
 - Adapts to system's theme
 - Consistent and eye-friendly UI
@@ -144,7 +144,7 @@ dependencies:
 - Type safety
 ---
 
-## 🧪 Testing
+## Testing
 
 The project has a strong emphasis on business logic testing, with a comprehensive suite of unit tests.
 
@@ -157,6 +157,8 @@ flutter test --coverage
 
 ### Test Coverage
 
+<img src="./screenshots/coverage.png" width="600">
+
 To generate a full test coverage report, use the provided script. This will generate mocks, run the tests and generate an HTML report in the `coverage/html` directory using [LCov](https://github.com/linux-test-project/lcov).
 
 ```sh
@@ -164,6 +166,17 @@ To generate a full test coverage report, use the provided script. This will gene
 ```
 
 ---
+## Screenshots
+
+| Product List  | Detail Page | Cart with Items | Empty Cart |
+| ------------- |:-------------:|:-------------:| :-------------:|
+| <img src="./screenshots/list-l.png" width="200"> | <img src="./screenshots/detail-l.png" width="200"> | <img src="./screenshots/cart-l.png" width="200"> | <img src="./screenshots/cart-empty-l.png" width="200"> | 
+| <img src="./screenshots/list-d.png" width="200"> | <img src="./screenshots/detail-d.png" width="200"> | <img src="./screenshots/cart-d.png" width="200"> | <img src="./screenshots/cart-empty-d.png" width="200"> | 
+---
+
+## Design reference:
+- [Mobile eCommerce Clothing Store App Design (Community)](https://www.figma.com/design/SqaelA9NWl8py91Yu7B3vV/Mobile-eCommerce-Clothing-Store-App-Design--Community-?node-id=1-3&p=f&t=6n2b5IACEGYyYBLa-0)
+- [FluxStore (Community)](https://www.figma.com/design/6cVJi1oPKMCZKjIy8CKojz/FluxStore--Community-?node-id=0-1&p=f&t=tyyxHkJCEw9yhkqg-0)
 
 ### Sets to run project
 
@@ -241,13 +254,7 @@ ProductsState (abstract)
 └── ProductsError
     └── message: String
 ```
-
-## Screenshots
-
-| Product List  | Detail Page | Cart with Items | Empty Cart |
-| ------------- |:-------------:|:-------------:| :-------------:|
-| <img src="./screenshots/list-l.png" width="200"> | <img src="./screenshots/detail-l.png" width="200"> | <img src="./screenshots/cart-l.png" width="200"> | <img src="./screenshots/cart-empty-l.png" width="200"> | 
-| <img src="./screenshots/list-d.png" width="200"> | <img src="./screenshots/detail-d.png" width="200"> | <img src="./screenshots/cart-d.png" width="200"> | <img src="./screenshots/cart-empty-d.png" width="200"> | 
+---
 
 
 ### Add Ons Features
