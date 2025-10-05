@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:holo_market_place_app/features/products/domain/entities/product.dart';
-import 'package:holo_market_place_app/features/products/presentation/cubit/cart_cubit.dart';
+import 'package:holo_market_place_app/features/products/domain/entities/product/product.dart';
+import 'package:holo_market_place_app/features/products/presentation/cubit/cart/cart_cubit.dart';
 import 'package:holo_market_place_app/features/products/presentation/pages/product_detail_page.dart';
 
 class ProductCard extends StatelessWidget {

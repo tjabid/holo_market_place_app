@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/failures.dart';
-import '../entities/product.dart';
-import '../repositories/product_repository.dart';
+import '../../../../../core/error/failures.dart';
+import '../../entities/product/product.dart';
+import '../../repositories/product_repository.dart';
 
 // Use Case for fetching all products
 class GetProductsUseCase {

@@ -9,8 +9,8 @@ class CartDto {
 
   CartDto({
     required this.id,
-    required this.userId,
-    required this.date,
+    this.userId = 1,
+    this.date = "",
     required this.products,
     this.shippingCost = 0, // Default shipping cost is 0 for now
   });

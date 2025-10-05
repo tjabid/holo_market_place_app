@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/usecases/get_products.dart';
-import '../../domain/usecases/get_categories.dart';
-import '../../domain/usecases/get_products_by_category.dart';
+import '../../../domain/usecases/product/get_products.dart';
+import '../../../domain/usecases/product/get_categories.dart';
+import '../../../domain/usecases/product/get_products_by_category.dart';
 import 'products_state.dart';
 
 class ProductsCubit extends Cubit<ProductsState> {

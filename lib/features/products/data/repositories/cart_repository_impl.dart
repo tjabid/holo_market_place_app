@@ -3,8 +3,7 @@ import 'package:holo_market_place_app/core/error/exceptions.dart';
 import 'package:holo_market_place_app/core/error/failures.dart';
 import 'package:holo_market_place_app/features/products/data/datasources/cart/cart_local_datasource.dart';
 import 'package:holo_market_place_app/features/products/data/datasources/cart/cart_remote_datasource.dart';
-import 'package:holo_market_place_app/features/products/data/datasources/product_remote_datasource.dart';
-import 'package:holo_market_place_app/features/products/data/dto/cart/cart_dto.dart';
+import 'package:holo_market_place_app/features/products/data/datasources/product/product_remote_datasource.dart';
 import 'package:holo_market_place_app/features/products/data/mappers/product_mapper.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/cart/cart.dart';
 
@@ -25,8 +24,7 @@ class CartRepositoryImpl implements CartRepository {
   Future<Either<Failure, Cart>> getCart() async {
     try {
       final productsResult = await productRemoteDatasource.getProducts();
-      final products =
-          productsResult.map((model) => mapProductEntity(model)).toList();
+      final products = productsResult.map((model) => mapProductEntity(model)).toList();
 
       final localCart = await cartLocalDatasource.getCart();
       if (localCart != null) {
@@ -34,6 +32,9 @@ class CartRepositoryImpl implements CartRepository {
       }
 
       final remoteDto = await cartRemoteDatasource.getCart();
+
+      await cartLocalDatasource.updateCart(remoteDto);
+
       return Right(mapCartDtoToEntity(remoteDto, products));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
@@ -43,45 +44,49 @@ class CartRepositoryImpl implements CartRepository {
       return Left(ServerFailure('Unexpected error: $e'));
     }
   }
-
+  
   @override
-  Future<void> addToCart(int productId, int quantity) {
-    // TODO: implement addToCart
-    throw UnimplementedError();
+  Future<Either<Failure, void>> clearCart() async {
+    try {
+      await cartLocalDatasource.clearCart();
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
   }
-
+  
   @override
-  Future<void> updateQuantity(int productId, int quantity) {
-    // TODO: implement updateQuantity
-    throw UnimplementedError();
+  Future<Either<Failure, void>> updateCart(Cart cart) async {
+    try {
+      await cartLocalDatasource.updateCart(mapCartToCartDto(cart));
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
   }
-
+  
   @override
-  Future<void> removeFromCart(int productId) {
-    // TODO: implement removeFromCart
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> clearCart() {
-    // TODO: implement clearCart
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> applyPromoCode(String promoCode) {
+  Future<Either<Failure, void>> applyPromoCode(String promoCode) {
     // TODO: implement applyPromoCode
     throw UnimplementedError();
   }
-
+  
   @override
-  Future<List<String>?> getAvailablePromoCodes() {
+  Future<Either<Failure, List<String>>> getAvailablePromoCodes() {
     // TODO: implement getAvailablePromoCodes
     throw UnimplementedError();
   }
-
+  
   @override
-  Future<void> removePromoCode() {
+  Future<Either<Failure, void>> removePromoCode() {
     // TODO: implement removePromoCode
     throw UnimplementedError();
   }

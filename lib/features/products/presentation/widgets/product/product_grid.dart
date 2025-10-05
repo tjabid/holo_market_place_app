@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../domain/entities/product.dart';
+import '../../../domain/entities/product/product.dart';
 import 'product_card.dart';
 
 class ProductGrid extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:holo_market_place_app/features/products/domain/entities/category.dart';
-import '../../domain/entities/product.dart';
+import 'package:holo_market_place_app/features/products/domain/entities/product/category.dart';
+import '../../../domain/entities/product/product.dart';
 
 abstract class ProductsState extends Equatable {
   const ProductsState();

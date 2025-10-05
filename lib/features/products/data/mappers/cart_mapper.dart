@@ -1,6 +1,6 @@
 import 'package:holo_market_place_app/features/products/data/dto/cart/cart_product_dto.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/cart/cart_item.dart';
-import 'package:holo_market_place_app/features/products/domain/entities/product.dart';
+import 'package:holo_market_place_app/features/products/domain/entities/product/product.dart';
 
 import '../../domain/entities/cart/cart.dart';
 import '../dto/cart/cart_dto.dart';
@@ -24,5 +24,23 @@ CartItem mapCartItemDtoToEntity(CartProductDto dto, Product product) {
     id: dto.productId.toString(),
     product: product,
     quantity: dto.quantity,
+  );
+}
+
+CartDto mapCartToCartDto(Cart cart) {
+  return CartDto(
+    id: cart.id,
+    products: cart.items
+        .map((item) => mapCartProductToDto(item))
+        .toList(),
+    shippingCost: cart.shippingCost
+  );
+}
+
+CartProductDto mapCartProductToDto(CartItem item) {
+  return CartProductDto(
+    productId: item.product.id,
+    quantity: item.quantity,
+    selectedSize: item.selectedSize,
   );
 }

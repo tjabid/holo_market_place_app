@@ -1,12 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/cart/cart.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/product/product.dart';
+import 'package:holo_market_place_app/features/products/domain/usecases/cart/add_to_cart.dart';
+import 'package:holo_market_place_app/features/products/domain/usecases/cart/cart_calculation.dart';
 import 'package:holo_market_place_app/features/products/domain/usecases/cart/clear_cart.dart';
 import 'package:holo_market_place_app/features/products/domain/usecases/cart/get_cart.dart';
-import 'package:holo_market_place_app/features/products/domain/usecases/cart/add_to_cart.dart';
 import 'package:holo_market_place_app/features/products/domain/usecases/cart/remove_from_cart.dart';
 import 'package:holo_market_place_app/features/products/domain/usecases/cart/update_quantity.dart';
-import 'package:holo_market_place_app/features/products/domain/usecases/cart/cart_calculation.dart';
 import 'package:holo_market_place_app/features/products/presentation/cubit/cart/cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {

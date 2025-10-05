@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 
-import 'package:holo_market_place_app/features/products/domain/entities/product.dart';
+import 'package:holo_market_place_app/features/products/domain/entities/product/product.dart';
 import 'package:holo_market_place_app/features/products/domain/repositories/product_repository.dart';
-import 'package:holo_market_place_app/features/products/domain/usecases/get_products.dart';
+import 'package:holo_market_place_app/features/products/domain/usecases/product/get_products.dart';
 
 @GenerateMocks([ProductRepository])
 import 'get_products_usecase_test.mocks.dart';

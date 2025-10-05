@@ -1,9 +1,9 @@
-import '../../../../core/constants/api_constants.dart';
-import '../../../../core/error/exceptions.dart';
-import '../../../../core/network/api_client.dart';
-import '../../domain/entities/category.dart';
-import '../dto/product_dto.dart';
-import '../mappers/category_mapper.dart';
+import '../../../../../core/constants/api_constants.dart';
+import '../../../../../core/error/exceptions.dart';
+import '../../../../../core/network/api_client.dart';
+import '../../../domain/entities/product/category.dart';
+import '../../dto/product_dto.dart';
+import '../../mappers/category_mapper.dart';
 
 abstract class ProductRemoteDataSource {
   Future<List<ProductDto>> getProducts();

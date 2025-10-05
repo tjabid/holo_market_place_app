@@ -1,32 +1,31 @@
 import 'package:dartz/dartz.dart';
-import 'package:holo_market_place_app/features/products/domain/entities/category.dart';
+import 'package:holo_market_place_app/features/products/domain/entities/product/category.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
-import '../../domain/entities/product.dart';
+import '../../domain/entities/product/product.dart';
 import '../../domain/repositories/product_repository.dart';
-import '../datasources/product_remote_datasource.dart';
-import '../mappers/category_mapper.dart';
+import '../datasources/product/product_local_datasource.dart';
+import '../datasources/product/product_remote_datasource.dart';
 import '../mappers/product_mapper.dart';
 
 class ProductRepositoryImpl implements ProductRepository {
   final ProductRemoteDataSource remoteDataSource;
+  final ProductLocalDataSource localDataSource;
   
-  List<Category> categories = [];
-  List<Product> allProducts = [];
-
-  ProductRepositoryImpl({required this.remoteDataSource});
+  ProductRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
 
   @override
   Future<Either<Failure, List<Product>>> getProducts() async {
     try {
-      if (allProducts.isNotEmpty) {
-        return Right(allProducts);
+      final cachedProducts = await localDataSource.getCachedProducts();
+      if (cachedProducts.isNotEmpty) {
+        return Right(cachedProducts);
       }
 
       final products = await remoteDataSource.getProducts();
       final productEntities = products.map((model) => mapProductEntity(model)).toList();
-      
-      allProducts = productEntities; // Cache all products
+
+      localDataSource.cacheProducts(productEntities); // Cache all products
 
       return Right(productEntities);
     } on ServerException catch (e) {
@@ -55,15 +54,9 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<Either<Failure, List<Product>>> getProductsByCategory(String category) async {
     try {
+      final allProducts = await localDataSource.getProductsByCategory(category);
       if (allProducts.isNotEmpty) {
-        if (category.toLowerCase() == 'all') {
           return Right(allProducts);
-        } else {
-          final filteredProducts = allProducts
-              .where((product) => product.category.toLowerCase() == category.toLowerCase())
-              .toList();
-          return Right(filteredProducts);
-        }
       }
       
       final products = await remoteDataSource.getProductsByCategory(category);
@@ -80,12 +73,16 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<Either<Failure, List<Category>>> getCategories() async {
     try {
-      if (this.categories.isNotEmpty) {
-        return Right(this.categories);
+      final cachedCategories = await localDataSource.getCachedCategories();
+      if (cachedCategories.isNotEmpty) {
+        return Right(cachedCategories);
       }
 
       final categories = await remoteDataSource.getCategories();
-      this.categories = categories; //cache categories
+      
+      // cache in memory
+      localDataSource.cacheCategories(categories);
+
       return Right(categories);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:holo_market_place_app/features/products/presentation/cubit/cart_cubit.dart';
-import 'package:holo_market_place_app/features/products/presentation/cubit/cart_state.dart';
-import 'package:holo_market_place_app/features/products/presentation/widgets/cart_item_widget.dart';
-import 'package:holo_market_place_app/features/products/presentation/widgets/cart_summary_widget.dart';
-import 'package:holo_market_place_app/features/products/presentation/widgets/empty_cart_widget.dart';
+import 'package:holo_market_place_app/features/products/presentation/cubit/cart/cart_cubit.dart';
+import 'package:holo_market_place_app/features/products/presentation/cubit/cart/cart_state.dart';
+import 'package:holo_market_place_app/features/products/presentation/widgets/cart/cart_item_widget.dart';
+import 'package:holo_market_place_app/features/products/presentation/widgets/cart/cart_summary_widget.dart';
+import 'package:holo_market_place_app/features/products/presentation/widgets/cart/empty_cart_widget.dart';
 
-import '../widgets/buttom_button.dart';
+import '../widgets/cart/promo_code_section.dart';
+import '../widgets/common/buttom_button.dart';
+import '../widgets/common/error_view.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -31,6 +33,13 @@ class CartPage extends StatelessWidget {
         builder: (context, state) {
           if (state is CartEmpty) {
             return const EmptyCartWidget();
+          }
+
+          if (state is CartError) {
+            return ErrorView(
+              message: state.message,
+              onRetry: () => context.read<CartCubit>().loadCart(),
+            );
           }
 
           if (state is CartLoaded) {
@@ -86,20 +95,21 @@ class CartPage extends StatelessWidget {
           ),
         ),
 
-        // // todo - Promo Code Section
-        // const PromoCodeSection(),
+        // Promo Code Section
+        const PromoCodeSection(),
 
         // Cart Summary
         CartSummaryWidget(cart: state.cart),
 
         // Checkout Button
         BottomButton(
-            textButton: 'Proceed to Checkout \$${state.cart.total.toStringAsFixed(2)}',
-            iconButton: Icons.lock_outline ,
-            onPressed: () {
-              // Handle proceed to checkout action
-            },
-          )
+          textButton:
+              'Proceed to Checkout \$${state.cart.total.toStringAsFixed(2)}',
+          iconButton: Icons.lock_outline,
+          onPressed: () {
+            _handleCheckout(context, state);
+          },
+        )
       ],
     );
   }
