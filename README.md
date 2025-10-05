@@ -2,25 +2,160 @@
 
 A modern, scalable, and well-tested e-commerce Flutter application built with Clean Architecture principles. This project serves as a robust template for building feature-rich marketplace apps.
 
-## ✨ Features
+## Features
+This app is implemented with Clean Architecture + Cubit state management pattern.
 
 - **Product Discovery**: Browse a list of all available products.
 - **Categorization**: Filter products by categories.
 - **Product Details**: View detailed information for each product.
 - **Shopping Cart**: Add, update, and remove items from the cart.
 - **Dark Mode**: Seamless theme switching for a better user experience.
-- **Local Caching**: Offline-first approach for products and categories, ensuring a fast and responsive UI.
+- **Local Caching**: Offline-first approach for cart items, ensuring a fast and responsive UI.
+
+
+## System Overview
+
+```
+┌────────────────────────────────────────────────┐
+│      USER INTERFACE - (Presentation Layer)     │
+└────────────────────────────────────────────────┘
+                        │
+                        ▼
+┌────────────────────────────────────────────────┐
+│      STATE MANAGEMENT - (Cubit Layer)          │
+└────────────────────────────────────────────────┘
+                        │
+                        ▼
+┌────────────────────────────────────────────────┐
+│      DOMAIN ENTITIES - (Business Logic)        │
+└────────────────────────────────────────────────┘
+                        │
+                        ▼
+┌────────────────────────────────────────────────┐
+│      DATA ENTITIES - (Data Retrieving Logic)   │
+└────────────────────────────────────────────────┘
+```
+
+---
+## Architecture Overview
+
+### **1. Features Layer (Clean Architecture)**
+
+#### **Domain Layer** (Business Logic)
+- **Entities**: Pure Dart classes (Product)
+- **Repositories**: Abstract interfaces
+- No dependencies on outer layers
+
+#### **Data Layer** (Implementation)
+- **Models**: JSON serialization
+- **Data Sources**: API communication
+- **Repository Implementation**: Converts models to entities
+
+#### **Presentation Layer** (UI)
+- **Cubit**: State management
+- **States**: Loading, Loaded, Error
+- **Pages**: Main screens
+- **Widgets**: Reusable UI components
+
+
+### **2. Core Layer**
+- **API Client**: Handles HTTP requests with error handling
+- **Constants**: Centralized API endpoints
+- **Failures & Exceptions**: Custom error handling
+- **DI**: GetIt service locator setup
 
 ---
 
-## 🚀 Getting Started
+## Libraries Used
 
-### Prerequisites
+```yaml
+dependencies:
+  flutter_bloc: ^8.1.3      # State management
+  equatable: ^2.0.5         # Value equality
+  get_it: ^7.2.0            # Dependency injection
+  http: ^1.2.0              # HTTP client
+  dartz: ^0.10.1            # Functional programming (Either)
+  cached_network_image      # Image caching
+  shared_preferences        # Local storage
+  flutter_launcher_icons    # App Icon generator
+  mockito: ^5.4.2           # Unit Testing
+  build_runner: ^2.4.6      # Mock generator
+```
+---
 
-- [Flutter SDK](https://flutter.dev/docs/get-started/install) (version 3.x or higher)
-- An IDE like [VS Code](https://code.visualstudio.com/) or [Android Studio](https://developer.android.com/studio).
+### Technical Stack
 
-### Installation & Setup
+-   **State Management**: `flutter_bloc` for predictable and scalable state management.
+-   **Functional Programming**: `dartz` to handle errors and exceptions gracefully using `Either`.
+-   **Networking**: `http` for making API calls.
+-   **Local Storage**: `shared_preferences` for caching cart data. An in-memory cache is used for products and categories.
+-   **Testing**: `mockito` and `build_runner` for generating mock objects for unit tests.
+-   **Image Loading**: `cached_network_image` for efficient loading and caching of network images.
+
+---
+## Key Features Implemented
+
+### ✅ Product List
+- Fetches products from `FakeStoreAPI`
+- Displays in 2-column grid
+- Shows: image, title, price, category, rating
+- Pull-to-refresh
+
+### ✅ Category Filtering
+- Dynamic categories from API
+- "All Items" + men's/women's clothing, jewelery, electronics
+- Filter products with icons
+- Real-time filtering
+
+### ✅ Error Handling
+- Network errors
+- Server errors
+- Retry functionality
+- User-friendly error messages
+
+### ✅ Loading States
+- Custom shimmer loading animation
+- Smooth transitions
+- No jarring state changes
+
+### ✅ Modern UI/UX
+- Clean, minimal design
+- Rounded corners
+- White cards with shadows
+- Black accent color
+- Bottom navigation bar
+
+### ✅ Dark Theme
+- Light Theme 
+
+---
+
+## 🧪 Testing
+
+The project has a strong emphasis on business logic testing, with a comprehensive suite of unit tests.
+
+### Running Tests
+
+To run all unit tests, execute the following command:
+```sh
+flutter test --coverage
+```
+
+### Test Coverage
+
+To generate a full test coverage report, use the provided script. This will generate mocks, run the tests and generate an HTML report in the `coverage/html` directory using [LCOV](https://github.com/linux-test-project/lcov).
+
+```sh
+./test_coverage.sh
+```
+
+---
+
+
+
+
+
+### Sets to run project
 
 1.  **Clone the repository:**
     ```sh
@@ -37,10 +172,10 @@ A modern, scalable, and well-tested e-commerce Flutter application built with Cl
     Before running tests, you need to generate the necessary mock files.
     ```sh
     # For macOS/Linux
-    ./test/generate_mocks.sh
+    ./generate_mocks.sh
 
     # For Windows
-    .\test\generate_mocks.bat
+    .\generate_mocks.bat
     ```
 
 4.  **Run the application:**
@@ -49,77 +184,3 @@ A modern, scalable, and well-tested e-commerce Flutter application built with Cl
     ```
 
 ---
-
-## 🏛️ Architecture
-
-This project follows **Clean Architecture** principles to create a separation of concerns, making the codebase scalable, maintainable, and testable. The code is organized into three main layers within each feature module:
-
--   **Presentation**: Contains the UI (Widgets), state management (BLoC/Cubit), and presentation logic.
--   **Domain**: The core of the application. Contains business logic, entities, use cases (interactors), and repository interfaces. This layer is independent of any framework.
--   **Data**: Implements the repository interfaces defined in the domain layer. It's responsible for fetching data from remote (API) and local (cache) data sources.
-
-### Technical Stack
-
--   **State Management**: `flutter_bloc` for predictable and scalable state management.
--   **Functional Programming**: `dartz` to handle errors and exceptions gracefully using `Either`.
--   **Networking**: `http` for making API calls.
--   **Local Storage**: `shared_preferences` for caching cart data. An in-memory cache is used for products and categories.
--   **Testing**: `mockito` and `build_runner` for generating mock objects for unit tests.
--   **Image Loading**: `cached_network_image` for efficient loading and caching of network images.
-
----
-
-## 🧪 Testing
-
-The project has a strong emphasis on testing, with a comprehensive suite of unit tests.
-
-### Running Tests
-
-To run all unit tests, execute the following command:
-```sh
-flutter test
-```
-
-### Test Coverage
-
-To generate a full test coverage report, use the provided script. This will run the tests and generate an HTML report in the `coverage/html` directory.
-
-```sh
-# For macOS/Linux
-./test_coverage.sh
-
-# For Windows
-.\test_coverage.bat
-```
-
-After running, you can open `coverage/html/index.html` in a browser to view the detailed report.
-
----
-
-## 📁 Project Structure
-
-```
-holo_market_place_app/
-├── lib/
-│   ├── core/         # Core utilities, constants, and error handling
-│   └── features/     # Feature-based modules
-│       └── products/
-│           ├── data/
-│           ├── domain/
-│           └── presentation/
-├── test/             # Unit and widget tests, mirroring the lib structure
-│   ├── core/
-│   └── features/
-└── wiki/             # In-depth documentation and architecture notes
-```
-
----
-
-## 📚 Wiki & Documentation
-
-For a deeper dive into the architecture, design decisions, and feature implementation details, please refer to the project [**Wiki**](./wiki/IMPLEMENTATION_SUMMARY.md). The wiki contains detailed documents on:
-
--   Cart Architecture
--   Dark Theme Implementation
--   Testing Guides
--   And more...
