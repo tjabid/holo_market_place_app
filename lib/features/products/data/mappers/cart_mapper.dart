@@ -41,5 +41,6 @@ CartProductDto mapCartProductToDto(CartItem item) {
   return CartProductDto(
     productId: item.product.id,
     quantity: item.quantity,
+    selectedSize: item.selectedSize,
   );
 }

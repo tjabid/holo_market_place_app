@@ -34,9 +34,6 @@ class Cart extends Equatable {
   Cart copyWith({
     List<CartItem>? items,
     double? shippingCost,
-    double? discount,
-    String? promoCode,
-    double? taxRate,
   }) {
     return Cart(
       items: items ?? this.items,

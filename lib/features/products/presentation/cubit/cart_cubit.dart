@@ -1,31 +1,32 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/cart/cart.dart';
-import 'package:holo_market_place_app/features/products/domain/entities/cart/cart_item.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/product.dart';
 import 'package:holo_market_place_app/features/products/domain/usecases/cart/clear_cart.dart';
 import 'package:holo_market_place_app/features/products/domain/usecases/cart/get_cart.dart';
-import 'package:holo_market_place_app/features/products/domain/usecases/cart/update_cart.dart';
+import 'package:holo_market_place_app/features/products/domain/usecases/cart/add_to_cart.dart';
+import 'package:holo_market_place_app/features/products/domain/usecases/cart/remove_from_cart.dart';
+import 'package:holo_market_place_app/features/products/domain/usecases/cart/update_quantity.dart';
+import 'package:holo_market_place_app/features/products/domain/usecases/cart/cart_calculation.dart';
 import 'package:holo_market_place_app/features/products/presentation/cubit/cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
   final GetCartUseCase getCartUseCase;
-  final UpdateCartUseCase updateCartUseCase;
   final ClearCartUseCase clearCartUseCase;
+  final AddToCartUseCase addToCartUseCase;
+  final RemoveFromCartUseCase removeFromCartUseCase;
+  final UpdateQuantityUseCase updateQuantityUseCase;
+  final CartCalculationUseCase cartCalculationUseCase;
 
   CartCubit({
     required this.getCartUseCase,
-    required this.updateCartUseCase,
     required this.clearCartUseCase,
+    required this.addToCartUseCase,
+    required this.removeFromCartUseCase,
+    required this.updateQuantityUseCase,
+    required this.cartCalculationUseCase,
   }) : super(const CartEmpty()) {
     loadCart();
   }
-
-  // Promo codes map (code -> discount amount)
-  final Map<String, double> _promoCodes = {
-    'SAVE10': 10.0,
-    'SAVE20': 20.0,
-    'WELCOME': 5.0,
-  };
 
   /// Load all products with categories
   Future<void> loadCart() async {
@@ -39,8 +40,8 @@ class CartCubit extends Cubit<CartState> {
     );
   }
 
-  // Add product to cart
-  void addToCart(Product product, {String? selectedSize}) {
+    // Add product to cart
+  void addToCart(Product product, {String? selectedSize}) async {
     final currentState = state;
 
     // Get current cart or create empty one
@@ -51,78 +52,62 @@ class CartCubit extends Cubit<CartState> {
       cart = const Cart();
     }
 
-    // Check if product already exists in cart
-    final existingItemIndex = cart.items.indexWhere(
-      (item) =>
-          item.product.id == product.id && item.selectedSize == selectedSize,
+    final result = await addToCartUseCase(
+      currentCart: cart,
+      product: product,
+      selectedSize: selectedSize,
     );
 
-    List<CartItem> updatedItems;
-    if (existingItemIndex != -1) {
-      // Product exists, increment quantity
-      updatedItems = List.from(cart.items);
-      final existingItem = updatedItems[existingItemIndex];
-      updatedItems[existingItemIndex] = existingItem.copyWith(
-        quantity: existingItem.quantity + 1,
-      );
-    } else {
-      // Add new product
-      final newItem = CartItem(
-        id: '${product.id}_${selectedSize ?? 'default'}_${DateTime.now().millisecondsSinceEpoch}',
-        product: product,
-        quantity: 1,
-        selectedSize: selectedSize,
-      );
-      updatedItems = [...cart.items, newItem];
-    }
-
-    final updatedCart = cart.copyWith(items: updatedItems);
-    updateCartUseCase(updatedCart);
-    emit(CartLoaded(updatedCart));
+    result.fold(
+      (failure) => emit(CartError(failure.message)),
+      (updatedCart) => emit(CartLoaded(updatedCart)),
+    );
   }
 
   // Remove item from cart
-  void removeFromCart(String cartItemId) {
+  void removeFromCart(String cartItemId) async {
     final currentState = state;
     if (currentState is! CartLoaded) return;
 
-    final updatedItems =
-        currentState.cart.items.where((item) => item.id != cartItemId).toList();
+    final result = await removeFromCartUseCase(
+      currentCart: currentState.cart,
+      cartItemId: cartItemId,
+    );
 
-      final updatedCart = currentState.cart.copyWith(items: updatedItems);
-      updateCartUseCase(updatedCart);
-
-    if (updatedItems.isEmpty) {
-      emit(const CartEmpty());
-    } else {
-      emit(CartLoaded(updatedCart));
-    }
+    result.fold(
+      (failure) => emit(CartError(failure.message)),
+      (updatedCart) {
+        if (updatedCart == null) {
+          emit(const CartEmpty());
+        } else {
+          emit(CartLoaded(updatedCart));
+        }
+      },
+    );
   }
 
   // Update item quantity
-  void updateQuantity(String cartItemId, int newQuantity) {
+  void updateQuantity(String cartItemId, int newQuantity) async {
     final currentState = state;
     if (currentState is! CartLoaded) return;
 
-    if (newQuantity <= 0) {
-      removeFromCart(cartItemId);
-      return;
-    }
+    final result = await updateQuantityUseCase(
+      currentCart: currentState.cart,
+      cartItemId: cartItemId,
+      newQuantity: newQuantity,
+    );
 
-    final updatedItems = currentState.cart.items.map((item) {
-      if (item.id == cartItemId) {
-        return item.copyWith(quantity: newQuantity);
-      }
-      return item;
-    }).toList();
-
-    final updatedCart = currentState.cart.copyWith(items: updatedItems);
-    updateCartUseCase(updatedCart);
-    
-    emit(CartLoaded(updatedCart));
-  }
-
-  // Increment quantity
+    result.fold(
+      (failure) => emit(CartError(failure.message)),
+      (updatedCart) {
+        if (updatedCart == null) {
+          emit(const CartEmpty());
+        } else {
+          emit(CartLoaded(updatedCart));
+        }
+      },
+    );
+  }  // Increment quantity
   void incrementQuantity(String cartItemId) {
     final currentState = state;
     if (currentState is! CartLoaded) return;
@@ -158,50 +143,9 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  // Apply promo code
-  void applyPromoCode(String promoCode) {
-    final currentState = state;
-    if (currentState is! CartLoaded) {
-      emit(const CartError('Cart is empty'));
-      return;
-    }
-
-    emit(const CartLoading());
-
-    // Simulate API call delay
-    Future.delayed(const Duration(milliseconds: 500), () {
-      final discount = _promoCodes[promoCode.toUpperCase()];
-
-      if (discount != null) {
-        final updatedCart = currentState.cart.copyWith(
-          discount: discount,
-          promoCode: promoCode.toUpperCase(),
-        );
-        emit(CartLoaded(updatedCart));
-      } else {
-        emit(const CartError('Invalid promo code'));
-        // Restore previous state after showing error
-        Future.delayed(const Duration(seconds: 2), () {
-          emit(currentState);
-        });
-      }
-    });
-  }
-
-  // Remove promo code
-  void removePromoCode() {
-    final currentState = state;
-    if (currentState is! CartLoaded) return;
-
-    final updatedCart = currentState.cart.copyWith(
-      discount: 0.0,
-      promoCode: null,
-    );
-    emit(CartLoaded(updatedCart));
-  }
-
   // Clear entire cart
   void clearCart() {
+    clearCartUseCase();
     emit(const CartEmpty());
   }
 
@@ -219,7 +163,7 @@ class CartCubit extends Cubit<CartState> {
   int getItemCount() {
     final currentState = state;
     if (currentState is CartLoaded) {
-      return currentState.cart.itemCount;
+      return cartCalculationUseCase.getItemCount(currentState.cart);
     }
     return 0;
   }
@@ -228,7 +172,7 @@ class CartCubit extends Cubit<CartState> {
   double getCartTotal() {
     final currentState = state;
     if (currentState is CartLoaded) {
-      return currentState.cart.total;
+      return cartCalculationUseCase.getCartTotal(currentState.cart);
     }
     return 0.0;
   }
