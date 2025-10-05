@@ -125,9 +125,23 @@ dependencies:
 - Black accent color
 - Bottom navigation bar
 
-### ✅ Dark Theme
-- Light Theme 
+### ✅ Dark and Light Themes
+- Seamlessly switches modes
+- Adapts to system's theme
+- Consistent and eye-friendly UI
 
+---
+
+## Code Quality & Best Practices Followed
+- SOLID principles
+- Clean Architecture
+- Dependency Injection
+- Error handling
+- Loading states
+- Consistent naming
+- Organized structure
+- Commented code
+- Type safety
 ---
 
 ## 🧪 Testing
@@ -143,17 +157,13 @@ flutter test --coverage
 
 ### Test Coverage
 
-To generate a full test coverage report, use the provided script. This will generate mocks, run the tests and generate an HTML report in the `coverage/html` directory using [LCOV](https://github.com/linux-test-project/lcov).
+To generate a full test coverage report, use the provided script. This will generate mocks, run the tests and generate an HTML report in the `coverage/html` directory using [LCov](https://github.com/linux-test-project/lcov).
 
 ```sh
 ./test_coverage.sh
 ```
 
 ---
-
-
-
-
 
 ### Sets to run project
 
@@ -184,3 +194,73 @@ To generate a full test coverage report, use the provided script. This will gene
     ```
 
 ---
+
+## Exmaple Overview of Product Feature
+
+### Data Flow
+
+```
+UI (Widget)
+    ↓
+BlocBuilder watches ProductsCubit
+    ↓
+ProductsCubit emits ProductsState
+    ↓
+Cubit calls GetProductsUseCase
+    ↓
+Use Case calls ProductRepository
+    ↓
+Repository calls RemoteDataSource
+    ↓
+DataSource uses ApiClient
+    ↓
+API returns JSON
+    ↓
+Model converts JSON to Entity
+    ↓
+Repository returns Either<Failure, Entity>
+    ↓
+Cubit emits new state (Loading/Loaded/Error)
+    ↓
+UI rebuilds with new data
+```
+
+---
+
+### State Management Pattern - Product
+
+#### **Products State Hierarchy**
+```dart
+ProductsState (abstract)
+├── ProductsInitial
+├── ProductsLoading
+├── ProductsLoaded
+│   ├── products: List<Product>
+│   ├── categories: List<String>
+│   └── selectedCategory: String?
+└── ProductsError
+    └── message: String
+```
+
+## Screenshots
+
+| Product List  | Detail Page | Cart with Items | Empty Cart |
+| ------------- |:-------------:|:-------------:| :-------------:|
+| <img src="./screenshots/list-l.png" width="200"> | <img src="./screenshots/detail-l.png" width="200"> | <img src="./screenshots/cart-l.png" width="200"> | <img src="./screenshots/cart-empty-l.png" width="200"> | 
+| <img src="./screenshots/list-d.png" width="200"> | <img src="./screenshots/detail-d.png" width="200"> | <img src="./screenshots/cart-d.png" width="200"> | <img src="./screenshots/cart-empty-d.png" width="200"> | 
+
+
+### Add Ons Features
+- Search Feature
+- Favorites
+- Lottie animations 
+- User & Orders
+
+## Further Reading
+
+- [Flutter BLoC Documentation](https://bloclibrary.dev/)
+- [Clean Architecture by Uncle Bob](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [GetIt Documentation](https://pub.dev/packages/get_it)
+- [Dartz Functional Programming](https://pub.dev/packages/dartz)
+- [Mockito](https://pub.dev/packages/mockito)
+- [LCov](https://github.com/linux-test-project/lcov)
