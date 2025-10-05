@@ -6,9 +6,9 @@ import 'core/di/injection_container.dart' as di;
 import 'core/theme/app_theme.dart';
 import 'features/products/presentation/cubit/products_cubit.dart';
 import 'features/products/presentation/cubit/cart_cubit.dart';
-import 'features/products/presentation/widgets/product_list_page.dart';
 import 'features/products/presentation/pages/coming_soon_page.dart';
 import 'features/products/presentation/pages/cart.dart';
+import 'features/products/presentation/pages/product_list_page.dart';
 import 'features/settings/settings_controller.dart';
 import 'features/settings/settings_service.dart';
 

@@ -1,23 +1,19 @@
-import 'package:holo_market_place_app/features/products/data/dto/product_dto.dart';
-
 class CartProductDto {
   final int productId;
   final int quantity;
-  final ProductDto? product;
+  final String? selectedSize;
 
   CartProductDto({
     required this.productId,
     required this.quantity,
-    this.product,
+    this.selectedSize,
   });
 
   factory CartProductDto.fromJson(Map<String, dynamic> json) {
     return CartProductDto(
       productId: json['productId'] as int,
       quantity: json['quantity'] as int,
-      product: json['product'] != null
-          ? ProductDto.fromJson(json['product'] as Map<String, dynamic>)
-          : null,
+      selectedSize: json['selectedSize'] as String?,
     );
   }
 
@@ -25,6 +21,7 @@ class CartProductDto {
     return {
       'productId': productId,
       'quantity': quantity,
+      'selectedSize': selectedSize,
     };
   }
 }

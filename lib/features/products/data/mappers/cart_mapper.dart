@@ -26,3 +26,20 @@ CartItem mapCartItemDtoToEntity(CartProductDto dto, Product product) {
     quantity: dto.quantity,
   );
 }
+
+CartDto mapCartToCartDto(Cart cart) {
+  return CartDto(
+    id: cart.id,
+    products: cart.items
+        .map((item) => mapCartProductToDto(item))
+        .toList(),
+    shippingCost: cart.shippingCost
+  );
+}
+
+CartProductDto mapCartProductToDto(CartItem item) {
+  return CartProductDto(
+    productId: item.product.id,
+    quantity: item.quantity,
+  );
+}

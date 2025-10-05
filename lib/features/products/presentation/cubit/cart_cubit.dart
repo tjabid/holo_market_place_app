@@ -2,13 +2,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/cart/cart.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/cart/cart_item.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/product.dart';
+import 'package:holo_market_place_app/features/products/domain/usecases/cart/clear_cart.dart';
 import 'package:holo_market_place_app/features/products/domain/usecases/cart/get_cart.dart';
+import 'package:holo_market_place_app/features/products/domain/usecases/cart/update_cart.dart';
 import 'package:holo_market_place_app/features/products/presentation/cubit/cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
   final GetCartUseCase getCartUseCase;
+  final UpdateCartUseCase updateCartUseCase;
+  final ClearCartUseCase clearCartUseCase;
 
-  CartCubit({required this.getCartUseCase}) : super(const CartEmpty());
+  CartCubit({
+    required this.getCartUseCase,
+    required this.updateCartUseCase,
+    required this.clearCartUseCase,
+  }) : super(const CartEmpty()) {
+    loadCart();
+  }
 
   // Promo codes map (code -> discount amount)
   final Map<String, double> _promoCodes = {
@@ -17,10 +27,22 @@ class CartCubit extends Cubit<CartState> {
     'WELCOME': 5.0,
   };
 
+  /// Load all products with categories
+  Future<void> loadCart() async {
+    emit(const CartLoading());
+
+    final cartResult = await getCartUseCase();
+
+    cartResult.fold(
+      (failure) => emit(CartError(failure.message)),
+      (cart) => emit(CartLoaded(cart)),
+    );
+  }
+
   // Add product to cart
   void addToCart(Product product, {String? selectedSize}) {
     final currentState = state;
-    
+
     // Get current cart or create empty one
     Cart cart;
     if (currentState is CartLoaded) {
@@ -31,7 +53,8 @@ class CartCubit extends Cubit<CartState> {
 
     // Check if product already exists in cart
     final existingItemIndex = cart.items.indexWhere(
-      (item) => item.product.id == product.id && item.selectedSize == selectedSize,
+      (item) =>
+          item.product.id == product.id && item.selectedSize == selectedSize,
     );
 
     List<CartItem> updatedItems;
@@ -54,6 +77,7 @@ class CartCubit extends Cubit<CartState> {
     }
 
     final updatedCart = cart.copyWith(items: updatedItems);
+    updateCartUseCase(updatedCart);
     emit(CartLoaded(updatedCart));
   }
 
@@ -62,14 +86,15 @@ class CartCubit extends Cubit<CartState> {
     final currentState = state;
     if (currentState is! CartLoaded) return;
 
-    final updatedItems = currentState.cart.items
-        .where((item) => item.id != cartItemId)
-        .toList();
+    final updatedItems =
+        currentState.cart.items.where((item) => item.id != cartItemId).toList();
+
+      final updatedCart = currentState.cart.copyWith(items: updatedItems);
+      updateCartUseCase(updatedCart);
 
     if (updatedItems.isEmpty) {
       emit(const CartEmpty());
     } else {
-      final updatedCart = currentState.cart.copyWith(items: updatedItems);
       emit(CartLoaded(updatedCart));
     }
   }
@@ -92,6 +117,8 @@ class CartCubit extends Cubit<CartState> {
     }).toList();
 
     final updatedCart = currentState.cart.copyWith(items: updatedItems);
+    updateCartUseCase(updatedCart);
+    
     emit(CartLoaded(updatedCart));
   }
 
@@ -144,7 +171,7 @@ class CartCubit extends Cubit<CartState> {
     // Simulate API call delay
     Future.delayed(const Duration(milliseconds: 500), () {
       final discount = _promoCodes[promoCode.toUpperCase()];
-      
+
       if (discount != null) {
         final updatedCart = currentState.cart.copyWith(
           discount: discount,
@@ -183,7 +210,8 @@ class CartCubit extends Cubit<CartState> {
     final currentState = state;
     if (currentState is! CartLoaded) return;
 
-    final updatedCart = currentState.cart.copyWith(shippingCost: newShippingCost);
+    final updatedCart =
+        currentState.cart.copyWith(shippingCost: newShippingCost);
     emit(CartLoaded(updatedCart));
   }
 
