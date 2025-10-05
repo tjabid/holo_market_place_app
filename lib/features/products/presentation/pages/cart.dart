@@ -7,6 +7,7 @@ import 'package:holo_market_place_app/features/products/presentation/widgets/car
 import 'package:holo_market_place_app/features/products/presentation/widgets/empty_cart_widget.dart';
 
 import '../widgets/buttom_button.dart';
+import '../widgets/error_view.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -31,6 +32,13 @@ class CartPage extends StatelessWidget {
         builder: (context, state) {
           if (state is CartEmpty) {
             return const EmptyCartWidget();
+          }
+
+          if (state is CartError) {
+            return ErrorView(
+              message: state.message,
+              onRetry: () => context.read<CartCubit>().loadCart(),
+            );
           }
 
           if (state is CartLoaded) {
@@ -94,12 +102,13 @@ class CartPage extends StatelessWidget {
 
         // Checkout Button
         BottomButton(
-            textButton: 'Proceed to Checkout \$${state.cart.total.toStringAsFixed(2)}',
-            iconButton: Icons.lock_outline ,
-            onPressed: () {
-              // Handle proceed to checkout action
-            },
-          )
+          textButton:
+              'Proceed to Checkout \$${state.cart.total.toStringAsFixed(2)}',
+          iconButton: Icons.lock_outline,
+          onPressed: () {
+            _handleCheckout(context, state);
+          },
+        )
       ],
     );
   }

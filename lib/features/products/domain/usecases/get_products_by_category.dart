@@ -11,7 +11,7 @@ class GetProductsByCategoryUseCase {
   Future<Either<Failure, List<Product>>> call(String category) async {
     // Validation - business rule
     if (category.trim().isEmpty) {
-      return Left(ValidationFailure('Category cannot be empty'));
+      return const Left(ValidationFailure('Category cannot be empty'));
     }
     
     // Convert to lowercase for consistency

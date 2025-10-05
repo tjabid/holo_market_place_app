@@ -7,6 +7,7 @@ import 'dart:async' as _i4;
 
 import 'package:dartz/dartz.dart' as _i2;
 import 'package:holo_market_place_app/core/error/failures.dart' as _i5;
+import 'package:holo_market_place_app/features/products/domain/entities/category.dart';
 import 'package:holo_market_place_app/features/products/domain/entities/product.dart'
     as _i6;
 import 'package:holo_market_place_app/features/products/domain/repositories/product_repository.dart'
@@ -99,19 +100,19 @@ class MockProductRepository extends _i1.Mock implements _i3.ProductRepository {
       ) as _i4.Future<_i2.Either<_i5.Failure, List<_i6.Product>>>);
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<String>>> getCategories() =>
+  _i4.Future<_i2.Either<_i5.Failure, List<Category>>> getCategories() =>
       (super.noSuchMethod(
         Invocation.method(
           #getCategories,
           [],
         ),
-        returnValue: _i4.Future<_i2.Either<_i5.Failure, List<String>>>.value(
-            _FakeEither_0<_i5.Failure, List<String>>(
+        returnValue: _i4.Future<_i2.Either<_i5.Failure, List<Category>>>.value(
+            _FakeEither_0<_i5.Failure, List<Category>>(
           this,
           Invocation.method(
             #getCategories,
             [],
           ),
         )),
-      ) as _i4.Future<_i2.Either<_i5.Failure, List<String>>>);
+      ) as _i4.Future<_i2.Either<_i5.Failure, List<Category>>>);
 }

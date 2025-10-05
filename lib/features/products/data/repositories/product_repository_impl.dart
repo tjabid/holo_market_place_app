@@ -5,7 +5,6 @@ import '../../../../core/error/failures.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/repositories/product_repository.dart';
 import '../datasources/product_remote_datasource.dart';
-import '../mappers/category_mapper.dart';
 import '../mappers/product_mapper.dart';
 
 class ProductRepositoryImpl implements ProductRepository {

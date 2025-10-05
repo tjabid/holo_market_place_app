@@ -24,8 +24,7 @@ class CartRepositoryImpl implements CartRepository {
   Future<Either<Failure, Cart>> getCart() async {
     try {
       final productsResult = await productRemoteDatasource.getProducts();
-      final products =
-          productsResult.map((model) => mapProductEntity(model)).toList();
+      final products = productsResult.map((model) => mapProductEntity(model)).toList();
 
       final localCart = await cartLocalDatasource.getCart();
       if (localCart != null) {
@@ -33,7 +32,7 @@ class CartRepositoryImpl implements CartRepository {
       }
 
       final remoteDto = await cartRemoteDatasource.getCart();
-      
+
       await cartLocalDatasource.updateCart(remoteDto);
 
       return Right(mapCartDtoToEntity(remoteDto, products));
