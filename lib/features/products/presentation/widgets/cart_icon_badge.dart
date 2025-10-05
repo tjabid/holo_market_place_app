@@ -5,10 +5,13 @@ import '../cubit/cart_state.dart';
 import '../pages/cart.dart';
 
 class CartIconBadge extends StatelessWidget {
-  const CartIconBadge({super.key});
+  final bool removeBackground;
+  const CartIconBadge({super.key, this.removeBackground = false});
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
         int itemCount = 0;
@@ -31,16 +34,16 @@ class CartIconBadge extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           child: Container(
             padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+            decoration: removeBackground ? null : BoxDecoration(
+              color: isDark ? Colors.black : Colors.white,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                const Icon(
+                Icon(
                   Icons.shopping_cart_outlined,
-                  color: Colors.white,
+                  color: Theme.of(context).iconTheme.color,
                   size: 22,
                 ),
                 if (itemCount > 0)

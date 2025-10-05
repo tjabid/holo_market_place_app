@@ -18,6 +18,9 @@ class ProductsCubit extends Cubit<ProductsState> {
   /// Load all products with categories
   Future<void> loadProducts() async {
     emit(ProductsLoading());
+    
+    final currentState = (state is ProductsLoaded) ? state as ProductsLoaded : null;
+    final selectedCategory = currentState?.selectedCategory ?? 'all';
 
     final productsResult = await getProductsUseCase();
     final categoriesResult = await getCategoriesUseCase();
@@ -30,7 +33,7 @@ class ProductsCubit extends Cubit<ProductsState> {
           (categories) => emit(ProductsLoaded(
             products: products,
             categories: categories,
-            selectedCategory: 'All Items',
+            selectedCategory: selectedCategory,
           )),
         );
       },
@@ -44,7 +47,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
     emit(ProductsLoading());
 
-    if (category == 'All Items') {
+    if (category == 'all') {
       final result = await getProductsUseCase();
       result.fold(
         (failure) => emit(ProductsError(failure.message)),

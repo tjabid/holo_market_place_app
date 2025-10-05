@@ -12,7 +12,7 @@ class CartSummaryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
@@ -36,7 +36,7 @@ class CartSummaryWidget extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
           // Subtotal
           _buildSummaryRow(
@@ -44,7 +44,7 @@ class CartSummaryWidget extends StatelessWidget {
             'Subtotal',
             '\$${cart.subtotal.toStringAsFixed(2)}',
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
 
           // Shipping
           _buildSummaryRow(
@@ -55,7 +55,7 @@ class CartSummaryWidget extends StatelessWidget {
                 : 'FREE',
             isShipping: cart.shippingCost == 0,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
 
           // // Tax
           // _buildSummaryRow(
@@ -90,10 +90,10 @@ class CartSummaryWidget extends StatelessWidget {
           // Estimated Delivery
           _buildEstimatedDelivery(context),
 
-          const SizedBox(height: 12),
+          // const SizedBox(height: 12),
 
-          // Payment Methods
-          _buildPaymentMethods(context),
+          // // Payment Methods
+          // _buildPaymentMethods(context),
         ],
       ),
     );
@@ -115,7 +115,6 @@ class CartSummaryWidget extends StatelessWidget {
           style: TextStyle(
             fontSize: isTotal ? 16 : 14,
             fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-            color: isTotal ? Colors.black : Colors.grey[700],
           ),
         ),
         Text(
@@ -123,13 +122,6 @@ class CartSummaryWidget extends StatelessWidget {
           style: TextStyle(
             fontSize: isTotal ? 18 : 14,
             fontWeight: isTotal ? FontWeight.bold : FontWeight.w600,
-            color: isDiscount
-                ? Colors.green
-                : isShipping
-                    ? Colors.green
-                    : isTotal
-                        ? Theme.of(context).primaryColor
-                        : Colors.black87,
           ),
         ),
       ],
@@ -140,23 +132,21 @@ class CartSummaryWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.1),
+        color: Theme.of(context).brightness == Brightness.light ? Colors.black.withOpacity(0.1) : Colors.white.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Row(
+      child: const Row(
         children: [
           Icon(
             Icons.local_shipping_outlined,
             size: 20,
-            color: Theme.of(context).primaryColor,
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Expanded(
             child: Text(
               'Estimated delivery: 3-5 business days',
               style: TextStyle(
                 fontSize: 12,
-                color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.w500,
               ),
             ),

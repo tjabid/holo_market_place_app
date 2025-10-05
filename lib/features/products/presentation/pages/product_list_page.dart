@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../widgets/category_widget.dart';
 import '../cubit/products_cubit.dart';
 import '../cubit/products_state.dart';
+import '../widgets/nav_bar_item.dart';
 import '../widgets/product_grid.dart';
-import '../widgets/category_filter_chips.dart';
 import '../widgets/error_view.dart';
 import '../widgets/cart_icon_badge.dart';
 
@@ -17,20 +18,22 @@ class ProductListPage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 20),
+
+            _buildHeader(context),
             
-            // Search Bar
-            _buildSearchBar(context),
+            // // Search Bar
+            // _buildSearchBar(context),
             
-            const SizedBox(height: 20),
+            const SizedBox(height: 12),
             
             // Category Filters
             BlocBuilder<ProductsCubit, ProductsState>(
               builder: (context, state) {
                 if (state is ProductsLoaded) {
-                  return CategoryFilterChips(
+                  return CategoryWidget(
+                    context: context,
                     categories: state.categories,
-                    selectedCategory: state.selectedCategory ?? 'All Items',
+                    selectedCategory: state.selectedCategory ?? 'all',
                     onCategorySelected: (category) {
                       context.read<ProductsCubit>().filterByCategory(category);
                     },
@@ -74,6 +77,56 @@ class ProductListPage extends StatelessWidget {
     );
   }
 
+  Widget _buildHeader(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[900] : Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: const Icon(Icons.menu, size: 24),
+          ),
+          const Text(
+            'Holo Store',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[900] : Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: const Icon(Icons.notifications_outlined, size: 24),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSearchBar(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -113,48 +166,56 @@ class ProductListPage extends StatelessWidget {
   }
 
   Widget _buildBottomNavigationBar(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-      decoration: const BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        boxShadow: [
+          BoxShadow(
+            color: isDark ? Colors.white.withOpacity(0.15) : Colors.black.withOpacity(0.15),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
       ),
-      child: const SafeArea(
+      child: SafeArea(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _NavBarItem(icon: Icons.home, isSelected: true),
-            _NavBarItem(icon: Icons.shopping_bag_outlined, isSelected: false),
-            _NavBarItem(icon: Icons.favorite_border, isSelected: false),
-            _NavBarItem(icon: Icons.person_outline, isSelected: false),
+            NavBarItem(
+              icon: Icons.home_outlined, 
+              isSelected: true,
+              onTap: () {
+                // Already on home page
+              },
+            ),
+            NavBarItem(
+              icon: Icons.search_outlined, 
+              isSelected: false,
+              onTap: () {
+                Navigator.pushNamed(context, '/search');
+              },
+            ),
+            const CartIconBadge(removeBackground: true),
+            NavBarItem(
+              icon: Icons.favorite_border, 
+              isSelected: false,
+              onTap: () {
+                Navigator.pushNamed(context, '/favorites');
+              },
+            ),
+            NavBarItem(
+              icon: Icons.person_outline, 
+              isSelected: false,
+              onTap: () {
+                Navigator.pushNamed(context, '/profile');
+              },
+            ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _NavBarItem extends StatelessWidget {
-  const _NavBarItem({
-    required this.icon,
-    required this.isSelected,
-  });
-
-  final IconData icon;
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.white.withOpacity(0.1) : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Icon(
-        icon,
-        color: isSelected ? Colors.white : Colors.grey[600],
-        size: 28,
       ),
     );
   }

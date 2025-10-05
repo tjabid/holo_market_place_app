@@ -13,16 +13,15 @@ class EmptyCartWidget extends StatelessWidget {
           children: [
             // Empty Cart Icon/Illustration
             Container(
-              width: 200,
-              height: 200,
+              width: 150,
+              height: 150,
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                color: Theme.of(context).iconTheme.color!.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.shopping_cart_outlined,
-                size: 100,
-                color: Theme.of(context).primaryColor.withOpacity(0.5),
+                size: 70,
               ),
             ),
 
@@ -32,7 +31,7 @@ class EmptyCartWidget extends StatelessWidget {
             const Text(
               'Your Cart is Empty',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
@@ -41,11 +40,10 @@ class EmptyCartWidget extends StatelessWidget {
             const SizedBox(height: 12),
 
             // Description
-            Text(
+            const Text(
               'Looks like you haven\'t added\nanything to your cart yet',
               style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
+                fontSize: 14,
                 height: 1.5,
               ),
               textAlign: TextAlign.center,
@@ -59,8 +57,6 @@ class EmptyCartWidget extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.white,
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -90,12 +86,11 @@ class EmptyCartWidget extends StatelessWidget {
   Widget _buildQuickLinks(BuildContext context) {
     return Column(
       children: [
-        Text(
+        const Text(
           'Quick Links',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Colors.grey[700],
           ),
         ),
         const SizedBox(height: 16),
@@ -153,14 +148,12 @@ class EmptyCartWidget extends StatelessWidget {
             Icon(
               icon,
               size: 16,
-              color: Theme.of(context).primaryColor,
             ),
             const SizedBox(width: 6),
             Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 13,
-                color: Colors.grey[700],
                 fontWeight: FontWeight.w500,
               ),
             ),

@@ -6,6 +6,8 @@ import 'package:holo_market_place_app/features/products/presentation/widgets/car
 import 'package:holo_market_place_app/features/products/presentation/widgets/cart_summary_widget.dart';
 import 'package:holo_market_place_app/features/products/presentation/widgets/empty_cart_widget.dart';
 
+import '../widgets/buttom_button.dart';
+
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
 
@@ -84,111 +86,21 @@ class CartPage extends StatelessWidget {
           ),
         ),
 
-        // // Promo Code Section
+        // // todo - Promo Code Section
         // const PromoCodeSection(),
 
         // Cart Summary
         CartSummaryWidget(cart: state.cart),
 
         // Checkout Button
-        _buildCheckoutButton(context, state),
+        BottomButton(
+            textButton: 'Proceed to Checkout \$${state.cart.total.toStringAsFixed(2)}',
+            iconButton: Icons.lock_outline ,
+            onPressed: () {
+              // Handle proceed to checkout action
+            },
+          )
       ],
-    );
-  }
-
-  Widget _buildCheckoutButton(BuildContext context, CartLoaded state) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Checkout Button
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: () => _handleCheckout(context, state),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Proceed to Checkout',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '\$${state.cart.total.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            // Continue Shopping Link
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(
-                'Continue Shopping',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            // Security Badge
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.lock_outline,
-                  size: 16,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  'Secure Checkout',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 

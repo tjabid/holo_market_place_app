@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/product.dart';
 import '../cubit/cart_cubit.dart';
+import '../widgets/buttom_button.dart';
 import '../widgets/cart_icon_badge.dart';
+import '../widgets/floating_action_button.dart';
 
 // Responsive constants for ProductDetailPage
 class _ProductDetailConstants {
@@ -14,25 +16,10 @@ class _ProductDetailConstants {
     if (screenHeight > 700) return 400; // Normal phone
     return 350; // Small phone
   }
-  
+
   static double imageHeight(BuildContext context) {
     return imageContainerHeight(context) * 0.875; // 87.5% of container
   }
-  
-  static double titleFontSize(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    if (screenWidth > 600) return 28; // Tablet
-    return 24; // Phone
-  }
-  
-  static double bodyFontSize(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    if (screenWidth > 600) return 16; // Tablet
-    return 14; // Phone
-  }
-  
-  // Minimum tap target for accessibility
-  static const double minTapTarget = 48.0;
 }
 
 class ProductDetailPage extends StatefulWidget {
@@ -57,16 +44,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   // Helper to determine if size selector should be shown
   bool get _shouldShowSizeSelector {
     final category = widget.product.category.toLowerCase();
-    return category.contains('clothing') || 
-           category.contains('apparel') ||
-           category.contains("women's clothing") ||
-           category.contains("men's clothing");
+    return category.contains('clothing') ||
+        category.contains('apparel') ||
+        category.contains("women's clothing") ||
+        category.contains("men's clothing");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      extendBodyBehindAppBar: true,
       appBar: _buildAppBar(context),
       body: Column(
         children: [
@@ -75,7 +63,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Product Image
+                  // Product Image with floating buttons on top
                   _buildProductImage(),
 
                   // Product Details
@@ -84,40 +72,109 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Title
-                        Text(
-                          widget.product.title,
-                          style: TextStyle(
-                            fontSize: _ProductDetailConstants.titleFontSize(context),
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).textTheme.titleLarge?.color,
-                          ),
+                        // Title and Price Row
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                widget.product.title,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Text(
+                                textAlign: TextAlign.right,
+                                "\$ ${widget.product.price}",
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 12),
 
-                        // Rating
-                        _buildRating(),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
+                        // Separator
+                        Divider(
+                          color: Colors.grey[200],
+                          thickness: 0.5,
+                          height: 1,
+                        ),
+                        const SizedBox(height: 20),
 
                         // Description
                         Text(
                           widget.product.description,
-                          style: TextStyle(
-                            fontSize: _ProductDetailConstants.bodyFontSize(context),
-                            color: Theme.of(context).textTheme.bodyMedium?.color,
+                          style: const TextStyle(
+                            fontSize: 12,
                             height: 1.5,
                           ),
                         ),
-                        const SizedBox(height: 24),
+
+                        const SizedBox(height: 20),
+                        // Separator
+                        Divider(
+                          color: Colors.grey[200],
+                          thickness: 0.5,
+                          height: 1,
+                        ),
+                        const SizedBox(height: 20),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Star icons and rating value
+                            _buildRating(),
+
+                            IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isFavorite = !isFavorite;
+                                  });
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        isFavorite
+                                            ? 'Added to favorites'
+                                            : 'Removed from favorites',
+                                      ),
+                                      duration: const Duration(seconds: 1),
+                                    ),
+                                  );
+                                },
+                                icon: Icon(
+                                  isFavorite
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  size: 28,
+                                  color: isFavorite ? Colors.red : null,
+                                )),
+                          ],
+                        ),
+
+                        const SizedBox(height: 20),
+                        // Separator
+                        Divider(
+                          color: Colors.grey[200],
+                          thickness: 0.5,
+                          height: 1,
+                        ),
+                        const SizedBox(height: 20),
 
                         // Choose Size - Only show for clothing items
                         if (_shouldShowSizeSelector) ...[
-                          Text(
+                          const Text(
                             'Choose size',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).textTheme.titleLarge?.color,
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -135,7 +192,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ),
 
           // Bottom Bar - Price and Add to Cart
-          _buildBottomBar(context),
+
+          BottomButton(
+            textButton: 'Add to Cart',
+            iconButton: Icons.shopping_bag_outlined,
+            onPressed: () {
+              context.read<CartCubit>().addToCart(
+                    widget.product,
+                    selectedSize: _shouldShowSizeSelector ? selectedSize : null,
+                  );
+              _showAddedToCartSnackBar(context);
+            },
+          )
         ],
       ),
     );
@@ -143,168 +211,104 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       leading: Semantics(
         label: 'Go back to product list',
         button: true,
-        child: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Theme.of(context).iconTheme.color,
-            size: 28,
+        child: Positioned(
+          top: 50,
+          left: 20,
+          child: CustomFloatingActionButton(
+            padding: 0,
+            icon: Icons.arrow_back,
+            onTap: () => Navigator.pop(context),
+            semanticLabel: 'Go back to product list',
+            semanticHint: 'Go back to product list',
           ),
-          onPressed: () => Navigator.pop(context),
         ),
       ),
-      title: Text(
-        'Details',
-        style: TextStyle(
-          color: Theme.of(context).textTheme.titleLarge?.color,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      centerTitle: true,
-      
       actions: const [
         CartIconBadge(),
-        SizedBox(width: 12),
+        SizedBox(width: 24),
       ],
     );
   }
 
   Widget _buildProductImage() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+
     // Cache the image height calculation to avoid repeated computation
     final imageHeight = _ProductDetailConstants.imageHeight(context);
-    final cacheSize = (imageHeight * MediaQuery.of(context).devicePixelRatio).toInt();
-    
+    final cacheSize =
+        (imageHeight * MediaQuery.of(context).devicePixelRatio).toInt();
+
     return Container(
       width: double.infinity,
-      height: _ProductDetailConstants.imageContainerHeight(context),
+      height: _ProductDetailConstants.imageContainerHeight(context) +
+          statusBarHeight,
+      padding: EdgeInsets.only(top: statusBarHeight),
       color: isDark ? Colors.grey[900] : Colors.grey[100],
-      child: Stack(
-        children: [
-          // Product Image
-          Center(
-            child: CachedNetworkImage(
-              imageUrl: widget.product.image,
-              fit: BoxFit.contain,
-              height: imageHeight,
-              placeholder: (context, url) => Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-              errorWidget: (context, url, error) {
-                // Log error for debugging
-                debugPrint('Failed to load product image: $error');
-                
-                final isDarkError = Theme.of(context).brightness == Brightness.dark;
-                
-                return Container(
-                  color: isDarkError ? Colors.grey[900] : Colors.grey[200],
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.image_not_supported,
-                        color: isDarkError ? Colors.grey[600] : Colors.grey[400],
-                        size: 80,
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Failed to load image',
-                        style: TextStyle(
-                          color: isDarkError ? Colors.grey[400] : Colors.grey[600],
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextButton.icon(
-                        onPressed: () {
-                          setState(() {}); // Trigger rebuild to retry loading
-                        },
-                        icon: Icon(
-                          Icons.refresh,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        label: Text(
-                          'Retry',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              // Cache optimization
-              memCacheHeight: cacheSize,
-              maxHeightDiskCache: cacheSize,
+      child: Center(
+        child: CachedNetworkImage(
+          imageUrl: widget.product.image,
+          fit: BoxFit.contain,
+          height: imageHeight,
+          placeholder: (context, url) => Center(
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Theme.of(context).primaryColor,
             ),
           ),
+          errorWidget: (context, url, error) {
+            // Log error for debugging
+            debugPrint('Failed to load product image: $error');
 
-          // Favorite Button with accessibility
-          Positioned(
-            top: 20,
-            right: 20,
-            child: Semantics(
-              label: isFavorite 
-                ? 'Remove ${widget.product.title} from favorites' 
-                : 'Add ${widget.product.title} to favorites',
-              button: true,
-              hint: 'Double tap to toggle favorite',
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isFavorite = !isFavorite;
-                  });
-                  
-                  // Show feedback for accessibility
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        isFavorite 
-                          ? 'Added to favorites' 
-                          : 'Removed from favorites',
-                      ),
-                      duration: const Duration(seconds: 1),
+            final isDarkError = Theme.of(context).brightness == Brightness.dark;
+
+            return Container(
+              color: isDarkError ? Colors.grey[900] : Colors.grey[200],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.image_not_supported,
+                    color: isDarkError ? Colors.grey[600] : Colors.grey[400],
+                    size: 80,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Failed to load image',
+                    style: TextStyle(
+                      color: isDarkError ? Colors.grey[400] : Colors.grey[600],
+                      fontSize: 14,
                     ),
-                  );
-                },
-                child: Container(
-                  // Ensure minimum tap target for accessibility
-                  constraints: const BoxConstraints(
-                    minWidth: _ProductDetailConstants.minTapTarget,
-                    minHeight: _ProductDetailConstants.minTapTarget,
                   ),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: () {
+                      setState(() {}); // Trigger rebuild to retry loading
+                    },
+                    icon: Icon(
+                      Icons.refresh,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    label: Text(
+                      'Retry',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
                       ),
-                    ],
+                    ),
                   ),
-                  child: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? Colors.red : Theme.of(context).iconTheme.color,
-                    size: 24,
-                  ),
-                ),
+                ],
               ),
-            ),
-          ),
-        ],
+            );
+          },
+          // Cache optimization
+          memCacheHeight: cacheSize,
+          maxHeightDiskCache: cacheSize,
+        ),
       ),
     );
   }
@@ -312,7 +316,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Widget _buildRating() {
     return Semantics(
       label: 'Average rating: ${widget.product.rating} out of 5 stars, '
-             'based on ${widget.product.ratingCount} customer reviews',
+          'based on ${widget.product.ratingCount} customer reviews',
       excludeSemantics: true,
       child: Row(
         children: [
@@ -324,18 +328,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           const SizedBox(width: 4),
           Text(
             '${widget.product.rating}/5',
-            style: TextStyle(
-              fontSize: 16,
+            style: const TextStyle(
+              fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).textTheme.titleMedium?.color,
             ),
           ),
           const SizedBox(width: 4),
           Text(
             '(${widget.product.ratingCount} reviews)',
-            style: TextStyle(
-              fontSize: 14,
-              color: Theme.of(context).textTheme.bodyMedium?.color,
+            style: const TextStyle(
+              fontSize: 12,
             ),
           ),
         ],
@@ -345,7 +347,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   Widget _buildSizeOptions() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Row(
       children: sizes.map((size) {
         final isSelected = selectedSize == size;
@@ -357,13 +359,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           },
           child: Container(
             margin: const EdgeInsets.only(right: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
             decoration: BoxDecoration(
-              color: isSelected 
+              color: isSelected
                   ? (isDark ? Colors.white : Colors.black)
-                  : (isDark ? Colors.grey[800] : Colors.white),
+                  : (isDark ? Colors.black : Colors.white),
               border: Border.all(
-                color: isSelected 
+                color: isSelected
                     ? (isDark ? Colors.white : Colors.black)
                     : Colors.grey[600]!,
                 width: 1.5,
@@ -373,9 +375,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             child: Text(
               size,
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: isSelected 
+                color: isSelected
                     ? (isDark ? Colors.black : Colors.white)
                     : (isDark ? Colors.white : Colors.black),
               ),
@@ -386,104 +388,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildBottomBar(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.black.withOpacity(0.95) : Colors.white.withOpacity(0.95),
-        boxShadow: [
-          BoxShadow(
-            color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Row(
-          children: [
-            // Price with accessibility
-            Expanded(
-              flex: 2,
-              child: Semantics(
-                label: 'Price: ${widget.product.price.toStringAsFixed(2)} dollars',
-                excludeSemantics: true,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Price',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
-                      ),
-                    ),
-                    // const SizedBox(height: 4),
-                    Text(
-                      '\$${widget.product.price.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // Add to Cart Button with accessibility
-            Expanded(
-              flex: 3,
-              child: Semantics(
-                label: 'Add ${widget.product.title} to cart for ${widget.product.price.toStringAsFixed(2)} dollars',
-                button: true,
-                hint: 'Double tap to add item to shopping cart',
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Add to cart using CartCubit
-                    context.read<CartCubit>().addToCart(
-                      widget.product,
-                      selectedSize: _shouldShowSizeSelector ? selectedSize : null,
-                    );
-                    _showAddedToCartSnackBar(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isDark ? Colors.white : Colors.black,
-                    foregroundColor: isDark ? Colors.black : Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.shopping_bag_outlined, size: 22, color: isDark ? Colors.black : Colors.white),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Add to Cart',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.black : Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   void _showAddedToCartSnackBar(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -491,9 +395,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       SnackBar(
         content: Row(
           children: [
-            Icon(Icons.check_circle, color: isDark ? Colors.white : Colors.black),
+            Icon(Icons.check_circle,
+                color: isDark ? Colors.white : Colors.black),
             const SizedBox(width: 12),
-            Text('Added to cart successfully!', style: TextStyle(color: isDark ? Colors.white : Colors.black)),
+            Text('Added to cart successfully!',
+                style: TextStyle(color: isDark ? Colors.white : Colors.black)),
           ],
         ),
         backgroundColor: Colors.green,

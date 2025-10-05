@@ -1,13 +1,15 @@
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/network/api_client.dart';
+import '../../domain/entities/category.dart';
 import '../dto/product_dto.dart';
+import '../mappers/category_mapper.dart';
 
 abstract class ProductRemoteDataSource {
   Future<List<ProductDto>> getProducts();
   Future<ProductDto> getProductById(int id);
   Future<List<ProductDto>> getProductsByCategory(String category);
-  Future<List<String>> getCategories();
+  Future<List<Category>> getCategories();
 }
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
@@ -54,10 +56,12 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   }
 
   @override
-  Future<List<String>> getCategories() async {
+  Future<List<Category>> getCategories() async {
     try {
       final response = await apiClient.get(ApiConstants.categories);
-      return List<String>.from(response);
+      final list = List<String>.from(response);
+      list.add('all');
+      return list.reversed.map((model) => mapStringToCategory(model, false)).toList();
     } catch (e) {
       throw ServerException('Failed to fetch categories: $e');
     }
