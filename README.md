@@ -29,8 +29,22 @@ To support additional languages, please visit the tutorial on
 [Internationalizing Flutter apps](https://flutter.dev/to/internationalization).
 
 ## Unit tests
+Coverage
+
+### Technical Details
 - `mockito` - For creating mock objects
 - `build_runner` - For generating mock files
 
 ### Generated Mock Files:
+Used `@GenerateMocks` annotation for mock generation
 Run `build_runner` to create *_test.mocks.dart
+
+#### Data Flow Testing:
+1. Local cache-first strategy validation
+2. Remote fallback with local caching
+
+Error handling:
+- ServerException → ServerFailure mapping
+- NetworkException → NetworkFailure mapping
+- Generic Exception → ServerFailure with "Unexpected error" handling
+- Proper error message propagation
